@@ -18,7 +18,7 @@ MonoBehaviour:
     pixelSize: 4
     scanlineIntensity: 0.3
     scanlineCount: 300
-    curvature: 0.1
+    curvature: 0
     chromaticAberration: 0.003
     vignette: 0.3
     brightness: 1

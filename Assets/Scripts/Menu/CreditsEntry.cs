@@ -6,11 +6,8 @@ using System.Collections;
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class CreditsEntry : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("Staff Information")]
-    [Tooltip("The name that is always visible")]
     public string staffName;
 
-    [Tooltip("The role/text that gets 'written' when hovering")]
     [TextArea]
     public string hiddenRole;
 

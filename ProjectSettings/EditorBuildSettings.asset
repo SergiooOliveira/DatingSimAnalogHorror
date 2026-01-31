@@ -9,10 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Gabriel/Scenes/NotAMenu.unity
+    path: Assets/Scenes/NotAMenu.unity
     guid: 7f0ea44712d731140bef0c0f73c537aa
   - enabled: 1
-    path: Assets/Gabriel/Scenes/NotAScene.unity
+    path: Assets/Scenes/NotAScene.unity
     guid: 45e13cae4b7dffa498498a8ddbcb65b6
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
