@@ -6,5 +6,5 @@ public class DialogNode : ScriptableObject
 {
     [TextArea(3, 10)]
     public string dialogText;
-    public List<Choice> choices;
+    //public List<Choices> choices;
 }
