@@ -63,7 +63,6 @@ public class DialogManager : MonoBehaviour
         if (waitingForClick && Input.GetMouseButtonDown(0))
         {
             ContinueStory();
-            //StartCoroutine(ExitDialogueMode());
         }
     }
     #endregion
