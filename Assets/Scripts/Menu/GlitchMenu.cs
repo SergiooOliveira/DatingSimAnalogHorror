@@ -78,7 +78,7 @@ public class GlitchMenu : MonoBehaviour
         if (startButtonObject != null) startButtonObject.SetActive(false);
         if (creditsButtonObject != null) creditsButtonObject.SetActive(false);
         if (creditsPanel != null) creditsPanel.SetActive(false);
-        if (backButtonObject != null) backButtonObject.SetActive(false); // NOVO: Começa escondido
+        if (backButtonObject != null) backButtonObject.SetActive(false);
 
         if (titleText != null)
         {
