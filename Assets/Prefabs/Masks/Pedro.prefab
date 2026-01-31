@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5268803150787874726
+--- !u!1 &2631390448150694975
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,52 +8,52 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4045114788249058911}
-  - component: {fileID: 8107659757246797470}
-  - component: {fileID: 8033689178075860808}
-  - component: {fileID: 7945767793884265157}
-  - component: {fileID: 4783147332430239459}
+  - component: {fileID: 2754546446704148585}
+  - component: {fileID: 2955583095790397185}
+  - component: {fileID: 7393654248522666799}
+  - component: {fileID: 2951825241170576154}
+  - component: {fileID: 7019607991033943663}
   m_Layer: 8
-  m_Name: MaskTest 1
+  m_Name: Pedro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &4045114788249058911
+--- !u!224 &2754546446704148585
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5268803150787874726}
-  m_LocalRotation: {x: 0.20798026, y: -0, z: -0, w: 0.9781331}
+  m_GameObject: {fileID: 2631390448150694975}
+  m_LocalRotation: {x: 0.5007253, y: 0, z: 0, w: 0.8656063}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.071853, y: 0.071853, z: 0.071853}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 24.008, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 60.096, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.704}
+  m_AnchoredPosition: {x: 0, y: 0.75}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!33 &8107659757246797470
+--- !u!33 &2955583095790397185
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5268803150787874726}
+  m_GameObject: {fileID: 2631390448150694975}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &8033689178075860808
+--- !u!23 &7393654248522666799
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5268803150787874726}
+  m_GameObject: {fileID: 2631390448150694975}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -70,7 +70,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7c8e2a74a4f3a2947892bc30669402e7, type: 2}
+  - {fileID: 2100000, guid: 47f1ea2e4f323b14188e1424f301c7bb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -92,13 +92,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7945767793884265157
+--- !u!64 &2951825241170576154
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5268803150787874726}
+  m_GameObject: {fileID: 2631390448150694975}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -114,16 +114,16 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &4783147332430239459
+--- !u!114 &7019607991033943663
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5268803150787874726}
+  m_GameObject: {fileID: 2631390448150694975}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec9f4c91d39750045885578d7574f470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maskData: {fileID: 11400000, guid: 9bdd35073ea41b146805110f54f6c1d2, type: 2}
+  maskData: {fileID: 11400000, guid: 92139f43fbaaebf4e85a8becf18762d0, type: 2}
