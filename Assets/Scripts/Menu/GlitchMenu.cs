@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering;
+using System.Reflection;
 
 public class GlitchMenu : MonoBehaviour
 {
@@ -31,9 +33,14 @@ public class GlitchMenu : MonoBehaviour
     public float expandDuration = 0.5f;
     public float silencePauseDuration = 1.0f;
 
-    [Header("CRT Toggle (URP)")]
+    [Header("CRT Control (URP)")]
     public ScriptableRendererData rendererData;
     public string featureName = "CRTRendererFeature";
+    public string propertyPath = "settings.distortion.curvature";
+    [Tooltip("Valor no Menu (Com Curvatura)")]
+    public float lockedCrtValue = 1.0f;
+    [Tooltip("Valor no Resto do Jogo (Sem Curvatura)")]
+    public float unlockedCrtValue = 0.0f;
 
     [Header("Word Glitch Effect")]
     public float shakeIntensity = 3.0f;
@@ -63,10 +70,14 @@ public class GlitchMenu : MonoBehaviour
 
     private void Start()
     {
+        // Setup CRT: Força a curvatura a 1 ao entrar no menu
         if (rendererData != null)
         {
             _targetFeature = rendererData.rendererFeatures.Find(f => f.name.Contains(featureName));
-            SetCrtActive(true);
+            if (_targetFeature != null)
+            {
+                SetCrtValue(lockedCrtValue);
+            }
         }
 
         _parentCanvas = GetComponentInParent<Canvas>();
@@ -88,9 +99,14 @@ public class GlitchMenu : MonoBehaviour
         StartCoroutine(SpawnWordsRoutine());
     }
 
+    // SEGURANÇA: Sempre que este objeto for desligado (mudança de cena ou Stop no editor)
+    // Força a curvatura a voltar a 0 (unlockedCrtValue)
     private void OnDisable()
     {
-        SetCrtActive(true);
+        if (_targetFeature != null)
+        {
+            SetCrtValue(unlockedCrtValue);
+        }
     }
 
     private void Update()
@@ -99,11 +115,61 @@ public class GlitchMenu : MonoBehaviour
         CheckMouseInteraction();
     }
 
-    void SetCrtActive(bool isActive)
+    void SetCrtValue(float value)
     {
-        if (_targetFeature != null)
+        if (_targetFeature == null) return;
+        bool success = SetFieldRecursive(_targetFeature, propertyPath.Split('.'), 0, value);
+        if (success) _targetFeature.SetDirty();
+    }
+
+    float GetCrtValue()
+    {
+        if (_targetFeature == null) return 0f;
+        return GetFieldRecursive(_targetFeature, propertyPath.Split('.'), 0);
+    }
+
+    bool SetFieldRecursive(object target, string[] path, int index, float value)
+    {
+        if (target == null) return false;
+        System.Type type = target.GetType();
+        FieldInfo field = type.GetField(path[index], BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        if (field == null) return false;
+
+        if (index == path.Length - 1)
         {
-            _targetFeature.SetActive(isActive);
+            if (field.FieldType == typeof(float))
+            {
+                field.SetValue(target, value);
+                return true;
+            }
+            return false;
+        }
+        else
+        {
+            object nextTarget = field.GetValue(target);
+            return SetFieldRecursive(nextTarget, path, index + 1, value);
+        }
+    }
+
+    float GetFieldRecursive(object target, string[] path, int index)
+    {
+        if (target == null) return 0f;
+        System.Type type = target.GetType();
+        FieldInfo field = type.GetField(path[index], BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        if (field == null) return 0f;
+
+        if (index == path.Length - 1)
+        {
+            if (field.FieldType == typeof(float))
+                return (float)field.GetValue(target);
+            return 0f;
+        }
+        else
+        {
+            object nextTarget = field.GetValue(target);
+            return GetFieldRecursive(nextTarget, path, index + 1);
         }
     }
 
@@ -331,7 +397,11 @@ public class GlitchMenu : MonoBehaviour
 
     public void StartGame(string sceneName)
     {
-        SetCrtActive(true);
+        // Garante que a curvatura está a 0 antes de carregar a cena
+        if (_targetFeature != null)
+        {
+            SetCrtValue(unlockedCrtValue);
+        }
         SceneManager.LoadScene(sceneName);
     }
 
@@ -349,7 +419,6 @@ public class GlitchMenu : MonoBehaviour
             SetCrtActive(false);
         }
 
-        
         if (backButtonObject != null)
         {
             backButtonObject.SetActive(true);
@@ -365,10 +434,17 @@ public class GlitchMenu : MonoBehaviour
             SetCrtActive(true);
         }
 
-        
         if (backButtonObject != null)
         {
             backButtonObject.SetActive(false);
+        }
+    }
+
+    void SetCrtActive(bool isActive)
+    {
+        if (_targetFeature != null)
+        {
+            _targetFeature.SetActive(isActive);
         }
     }
 }

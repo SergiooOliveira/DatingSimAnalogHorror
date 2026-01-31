@@ -229,7 +229,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 1
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -460,7 +460,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2118652470}
         m_TargetAssemblyTypeName: GlitchMenu, Assembly-CSharp
         m_MethodName: StartGame
         m_Mode: 5
@@ -2670,6 +2670,9 @@ MonoBehaviour:
   silencePauseDuration: 1.5
   rendererData: {fileID: 11400000, guid: f288ae1f4751b564a96ac7587541f7a2, type: 2}
   featureName: CRTRendererFeature
+  propertyPath: settings.distortion.curvature
+  lockedCrtValue: 1
+  unlockedCrtValue: 0
   shakeIntensity: 3
   shakeSpeed: 0.05
   obsessionPhrases:
@@ -2703,7 +2706,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
