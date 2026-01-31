@@ -12,6 +12,7 @@ public class GlitchMenu : MonoBehaviour
     public GameObject startButtonObject;
     public GameObject creditsButtonObject;
     public GameObject creditsPanel;
+    public GameObject backButtonObject;
     public TextMeshProUGUI titleText;
     public Image backgroundPanel;
     public RectTransform spawnArea;
@@ -31,9 +32,7 @@ public class GlitchMenu : MonoBehaviour
     public float silencePauseDuration = 1.0f;
 
     [Header("CRT Toggle (URP)")]
-    [Tooltip("Arrasta aqui o teu 'ForwardRenderer' ou 'UniversalRendererData'")]
     public ScriptableRendererData rendererData;
-    [Tooltip("O nome do Script da Feature (vê na lista do Renderer Data)")]
     public string featureName = "CRTRendererFeature";
 
     [Header("Word Glitch Effect")]
@@ -79,6 +78,7 @@ public class GlitchMenu : MonoBehaviour
         if (startButtonObject != null) startButtonObject.SetActive(false);
         if (creditsButtonObject != null) creditsButtonObject.SetActive(false);
         if (creditsPanel != null) creditsPanel.SetActive(false);
+        if (backButtonObject != null) backButtonObject.SetActive(false); // NOVO: Começa escondido
 
         if (titleText != null)
         {
@@ -348,6 +348,13 @@ public class GlitchMenu : MonoBehaviour
             creditsPanel.transform.SetAsLastSibling();
             SetCrtActive(false);
         }
+
+        
+        if (backButtonObject != null)
+        {
+            backButtonObject.SetActive(true);
+            StartCoroutine(AnimateExpand(backButtonObject.transform));
+        }
     }
 
     public void CloseCredits()
@@ -356,6 +363,12 @@ public class GlitchMenu : MonoBehaviour
         {
             creditsPanel.SetActive(false);
             SetCrtActive(true);
+        }
+
+        
+        if (backButtonObject != null)
+        {
+            backButtonObject.SetActive(false);
         }
     }
 }
