@@ -58,9 +58,14 @@ public class GlitchMenu : MonoBehaviour
     private List<TextMeshProUGUI> activeWords = new List<TextMeshProUGUI>();
     private bool gameUnlocked = false;
     private int wordsClearedCount = 0;
+    private Canvas _parentCanvas;
 
     private void Start()
     {
+        // Tenta encontrar o Canvas no pai ou na cena para evitar NullReference
+        _parentCanvas = GetComponentInParent<Canvas>();
+        if (_parentCanvas == null) _parentCanvas = FindObjectOfType<Canvas>();
+
         if (backgroundPanel != null)
             backgroundPanel.color = backgroundColor;
 
@@ -155,6 +160,17 @@ public class GlitchMenu : MonoBehaviour
 
     void CheckMouseInteraction()
     {
+        // Se nao encontrou canvas, tenta encontrar de novo
+        if (_parentCanvas == null) _parentCanvas = FindObjectOfType<Canvas>();
+        if (_parentCanvas == null) return; // Se mesmo assim nao houver canvas, aborta para nao dar erro
+
+        Camera uiCamera = null;
+        if (_parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+        {
+            uiCamera = _parentCanvas.worldCamera;
+            if (uiCamera == null) uiCamera = Camera.main;
+        }
+
         for (int i = activeWords.Count - 1; i >= 0; i--)
         {
             if (gameUnlocked) return;
@@ -165,10 +181,20 @@ public class GlitchMenu : MonoBehaviour
                 continue;
             }
 
-            Vector3 wordScreenPos = activeWords[i].transform.position;
-            float dist = Vector3.Distance(Input.mousePosition, wordScreenPos);
+            // Metodo 1: Verifica se o rato esta DENTRO do retangulo da palavra (Mais preciso para palavras longas)
+            bool mouseInsideRect = RectTransformUtility.RectangleContainsScreenPoint(
+                activeWords[i].rectTransform,
+                Input.mousePosition,
+                uiCamera
+            );
 
-            if (dist < mouseInteractionRadius)
+            // Metodo 2: Verifica a DISTANCIA ao centro (Para manter a mecanica de "aura" ou raio)
+            Vector2 wordScreenPoint = RectTransformUtility.WorldToScreenPoint(uiCamera, activeWords[i].transform.position);
+            float dist = Vector2.Distance(Input.mousePosition, wordScreenPoint);
+            bool mouseInsideRadius = dist < mouseInteractionRadius;
+
+            // Se qualquer um dos metodos for verdadeiro, destroi a palavra
+            if (mouseInsideRect || mouseInsideRadius)
             {
                 DestroyWord(activeWords[i]);
 
