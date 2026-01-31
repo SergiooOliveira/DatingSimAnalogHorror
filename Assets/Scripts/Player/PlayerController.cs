@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Configuração de Input")]
+    [Header("Configuraï¿½ï¿½o de Input")]
     public InputActionReference moveAction;
     public InputActionReference lookAction;
     public InputActionReference sprintAction;
@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public float gravidade = 20.0f;
     public float alturaPulo = 1.5f;
 
-    [Header("Câmara")]
+    [Header("Cï¿½mara")]
     public Transform cameraJogador;
     public float sensibilidadeMouse = 15.0f;
     public float limiteOlharCimaBaixo = 80.0f;
@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (DialogManager.Instance.dialogueIsPlaying) return;
+
         MoverJogador();
         RodarCamera();
 
@@ -123,10 +125,10 @@ public class PlayerController : MonoBehaviour
         {
             timerBob += Time.deltaTime * velocidadeBob;
 
-            // Cálculo da posição da cabeça
+            // Cï¿½lculo da posiï¿½ï¿½o da cabeï¿½a
             float posicaoY = Mathf.Sin(timerBob);
 
-            // Move a câmara visualmente
+            // Move a cï¿½mara visualmente
             float novaPosicaoY = alturaPadraoCamera + posicaoY * forcaBob;
             cameraJogador.transform.localPosition = new Vector3(cameraJogador.transform.localPosition.x, novaPosicaoY, cameraJogador.transform.localPosition.z);
         }
