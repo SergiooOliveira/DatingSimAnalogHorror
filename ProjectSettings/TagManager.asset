@@ -13,8 +13,8 @@ TagManager:
   - UI
   - Ground
   - Walls
-  - 
-  - 
+  - Interactable
+  - Inventory3D
   - 
   - 
   - 
