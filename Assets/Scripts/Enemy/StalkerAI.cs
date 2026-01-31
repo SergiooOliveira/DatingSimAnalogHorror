@@ -20,6 +20,12 @@ public class StalkerAI : MonoBehaviour
     [Tooltip("Distância mínima para ativar o modo 'Date'")]
     public float catchDistance = 1.5f;
 
+    [Header("Deteção e Ativação")]
+    [Tooltip("Distância máxima para o inimigo detetar o jogador.")]
+    public float detectionRange = 15.0f;
+    [Tooltip("Se ativado, o inimigo para se o jogador estiver escondido atrás de uma parede (mesmo que o jogador não esteja a olhar).")]
+    public bool stopIfPlayerHidden = true;
+
     [Header("Deteção de Obstáculos")]
     [Tooltip("Camadas que bloqueiam a visão (ex: Paredes). Não inclua o Player ou o Inimigo aqui.")]
     public LayerMask obstacleMask;
@@ -30,14 +36,14 @@ public class StalkerAI : MonoBehaviour
 
     private NavMeshAgent _agent;
     private Renderer _renderer;
-    private bool _isCaught = false; // Para garantir que o evento só dispara uma vez
+    private bool _isCaught = false;
+    private bool _isActive = false;
 
     void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
         _renderer = GetComponent<Renderer>();
 
-        // Configuração inicial do NavMesh
         _agent.speed = moveSpeed;
         _agent.acceleration = acceleration;
 
@@ -55,20 +61,48 @@ public class StalkerAI : MonoBehaviour
 
     void Update()
     {
-        // Se já apanhou o jogador, para tudo e não faz mais cálculos
+        // Se já apanhou o jogador, para tudo
         if (_isCaught) return;
 
-        // 1. Verificar a distância para o "Date Mode"
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
+        if (!_isActive)
+        {
+            if (distanceToPlayer <= detectionRange && IsVisibleToPlayer())
+            {
+                _isActive = true;
+                Debug.Log("Inimigo ativado! A perseguição começou.");
+            }
+            else
+            {
+                // Enquanto não ativa, fica parado
+                StopMoving();
+                return;
+            }
+        }
+
+        // --- LÓGICA DE CAPTURA ---
         if (distanceToPlayer <= catchDistance)
         {
             TriggerDateMode();
             return;
         }
 
-        // 2. Lógica de "Weeping Angel" (Mexe se não for visto)
-        if (IsVisibleToPlayer())
+        if (distanceToPlayer > detectionRange)
+        {
+            StopMoving();
+            return;
+        }
+
+
+        bool playerLookingAtMe = IsVisibleToPlayer();
+        bool enemyCanSeePlayer = HasLineOfSightToPlayer();
+
+        if (playerLookingAtMe)
+        {
+            StopMoving();
+        }
+        else if (stopIfPlayerHidden && !enemyCanSeePlayer)
         {
             StopMoving();
         }
@@ -79,14 +113,12 @@ public class StalkerAI : MonoBehaviour
     }
 
     /// <summary>
-    /// Verifica se o inimigo está dentro do campo de visão da câmara E sem obstáculos à frente.
+    /// Verifica se o jogador está a olhar para o inimigo.
     /// </summary>
     bool IsVisibleToPlayer()
     {
-        // Passo A: Teste de Frustum (Está dentro do ângulo da câmara?)
         Plane[] planes = GeometryUtility.CalculateFrustumPlanes(playerCamera);
 
-        // Se a caixa de colisão do renderizador não estiver dentro dos planos da câmara, não está visível
         if (!GeometryUtility.TestPlanesAABB(planes, _renderer.bounds))
         {
             return false;
@@ -95,14 +127,30 @@ public class StalkerAI : MonoBehaviour
         Vector3 direction = _renderer.bounds.center - playerCamera.transform.position;
         float distance = direction.magnitude;
 
-        // Se o raio bater numa parede antes de bater no inimigo, então o jogador não consegue vê-lo
-        if (Physics.Raycast(playerCamera.transform.position, direction, out RaycastHit hit, distance, obstacleMask))
+        if (Physics.Raycast(playerCamera.transform.position, direction, distance, obstacleMask))
         {
-            // Bateu em algo que não é o inimigo (uma parede), logo está escondido
             return false;
         }
 
-        // Passou nos dois testes: Está no ecrã e sem paredes à frente.
+        return true;
+    }
+
+    /// <summary>
+    /// Verifica se o INIMIGO consegue ver o JOGADOR (para não perseguir através de paredes).
+    /// </summary>
+    bool HasLineOfSightToPlayer()
+    {
+        Vector3 origin = transform.position + Vector3.up * 1.5f;
+        Vector3 target = playerTransform.position + Vector3.up * 1.5f;
+
+        Vector3 direction = target - origin;
+        float distance = direction.magnitude;
+
+        if (Physics.Raycast(origin, direction, distance, obstacleMask))
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -120,6 +168,7 @@ public class StalkerAI : MonoBehaviour
         if (!_agent.isStopped)
         {
             _agent.isStopped = true;
+            _agent.velocity = Vector3.zero; 
         }
     }
 
@@ -129,13 +178,15 @@ public class StalkerAI : MonoBehaviour
         _agent.isStopped = true;
 
         Debug.Log("Dating Simulator Mode Activated! <3");
-
         onCaughtPlayer.Invoke();
     }
 
     void OnDrawGizmosSelected()
-    {
+    {  
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, catchDistance);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
 }
