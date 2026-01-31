@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.retro.crt-effects": {
+      "version": "https://github.com/Mushroom-Ano/unity-retro-crt-effects.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "14.0.0"
+      },
+      "hash": "7acf86064171285f5d542f468bc4af4edb2acf83"
+    },
     "com.unity.ai.navigation": {
       "version": "2.0.9",
       "depth": 0,
