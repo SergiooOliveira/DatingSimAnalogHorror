@@ -18,17 +18,17 @@ MonoBehaviour:
     pixelSize: 4
     scanlineIntensity: 0.3
     scanlineCount: 300
-    curvature: 0.02
+    curvature: 0.1
     chromaticAberration: 0.003
     vignette: 0.3
     brightness: 1
     phosphorIntensity: 0
-    flickerIntensity: 0
+    flickerIntensity: 0.069
     rollingScanlineIntensity: 0
     rollingScanlineSpeed: 0.5
-    glowIntensity: 0
+    glowIntensity: 1
     glowSpread: 3
-    noiseIntensity: 0
+    noiseIntensity: 0.057
     colorBleedIntensity: 0
     interlacingIntensity: 0
 --- !u!114 &11400000

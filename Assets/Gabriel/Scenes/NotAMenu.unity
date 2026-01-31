@@ -566,7 +566,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2537,6 +2537,8 @@ MonoBehaviour:
   glitchColor: {r: 1, g: 0, b: 0, a: 1}
   expandDuration: 0.5
   silencePauseDuration: 1.5
+  rendererData: {fileID: 11400000, guid: f288ae1f4751b564a96ac7587541f7a2, type: 2}
+  featureName: CRTRendererFeature
   shakeIntensity: 3
   shakeSpeed: 0.05
   obsessionPhrases:

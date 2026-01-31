@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Rendering.Universal;
 
 public class GlitchMenu : MonoBehaviour
 {
@@ -22,24 +23,24 @@ public class GlitchMenu : MonoBehaviour
     public float mouseInteractionRadius = 50f;
 
     [Header("Visual Settings")]
-    [Tooltip("The main background color set in the inspector")]
     public Color backgroundColor = Color.black;
     public Color glitchColor = Color.red;
 
     [Header("Animation Settings")]
-    [Tooltip("Duration of the expand animation for Title and Start Button")]
     public float expandDuration = 0.5f;
-    [Tooltip("Dramatic pause (and unlock sound duration) after clearing words")]
     public float silencePauseDuration = 1.0f;
 
+    [Header("CRT Toggle (URP)")]
+    [Tooltip("Arrasta aqui o teu 'ForwardRenderer' ou 'UniversalRendererData'")]
+    public ScriptableRendererData rendererData;
+    [Tooltip("O nome do Script da Feature (vê na lista do Renderer Data)")]
+    public string featureName = "CRTRendererFeature";
+
     [Header("Word Glitch Effect")]
-    [Tooltip("How much the words shake (Position Offset)")]
     public float shakeIntensity = 3.0f;
-    [Tooltip("How fast the words shake (Time in seconds)")]
     public float shakeSpeed = 0.05f;
 
     [Header("Mask Whispers")]
-    [Tooltip("Phrases related to the asylum and mask possession (English Only)")]
     public string[] obsessionPhrases = {
         "WEAR THE MASK", "WE ARE NOT CRAZY", "THE FACE HURTS",
         "THEY LIE", "JOIN US", "CORRUPTION",
@@ -52,7 +53,6 @@ public class GlitchMenu : MonoBehaviour
     public AudioClip glitchSound;
     public AudioClip whisperSound;
     public AudioClip unlockSound;
-    [Tooltip("Music to play after the menu is unlocked (Loops)")]
     public AudioClip menuThemeLoop;
 
     private List<TextMeshProUGUI> activeWords = new List<TextMeshProUGUI>();
@@ -60,9 +60,16 @@ public class GlitchMenu : MonoBehaviour
     private int wordsClearedCount = 0;
     private Canvas _parentCanvas;
 
+    private ScriptableRendererFeature _targetFeature;
+
     private void Start()
     {
-        // Tenta encontrar o Canvas no pai ou na cena para evitar NullReference
+        if (rendererData != null)
+        {
+            _targetFeature = rendererData.rendererFeatures.Find(f => f.name.Contains(featureName));
+            SetCrtActive(true);
+        }
+
         _parentCanvas = GetComponentInParent<Canvas>();
         if (_parentCanvas == null) _parentCanvas = FindObjectOfType<Canvas>();
 
@@ -81,11 +88,23 @@ public class GlitchMenu : MonoBehaviour
         StartCoroutine(SpawnWordsRoutine());
     }
 
+    private void OnDisable()
+    {
+        SetCrtActive(true);
+    }
+
     private void Update()
     {
         if (gameUnlocked) return;
-
         CheckMouseInteraction();
+    }
+
+    void SetCrtActive(bool isActive)
+    {
+        if (_targetFeature != null)
+        {
+            _targetFeature.SetActive(isActive);
+        }
     }
 
     IEnumerator SpawnWordsRoutine()
@@ -160,9 +179,8 @@ public class GlitchMenu : MonoBehaviour
 
     void CheckMouseInteraction()
     {
-        // Se nao encontrou canvas, tenta encontrar de novo
         if (_parentCanvas == null) _parentCanvas = FindObjectOfType<Canvas>();
-        if (_parentCanvas == null) return; // Se mesmo assim nao houver canvas, aborta para nao dar erro
+        if (_parentCanvas == null) return;
 
         Camera uiCamera = null;
         if (_parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
@@ -181,19 +199,16 @@ public class GlitchMenu : MonoBehaviour
                 continue;
             }
 
-            // Metodo 1: Verifica se o rato esta DENTRO do retangulo da palavra (Mais preciso para palavras longas)
             bool mouseInsideRect = RectTransformUtility.RectangleContainsScreenPoint(
                 activeWords[i].rectTransform,
                 Input.mousePosition,
                 uiCamera
             );
 
-            // Metodo 2: Verifica a DISTANCIA ao centro (Para manter a mecanica de "aura" ou raio)
             Vector2 wordScreenPoint = RectTransformUtility.WorldToScreenPoint(uiCamera, activeWords[i].transform.position);
             float dist = Vector2.Distance(Input.mousePosition, wordScreenPoint);
             bool mouseInsideRadius = dist < mouseInteractionRadius;
 
-            // Se qualquer um dos metodos for verdadeiro, destroi a palavra
             if (mouseInsideRect || mouseInsideRadius)
             {
                 DestroyWord(activeWords[i]);
@@ -316,6 +331,7 @@ public class GlitchMenu : MonoBehaviour
 
     public void StartGame(string sceneName)
     {
+        SetCrtActive(true);
         SceneManager.LoadScene(sceneName);
     }
 
@@ -330,6 +346,7 @@ public class GlitchMenu : MonoBehaviour
         {
             creditsPanel.SetActive(true);
             creditsPanel.transform.SetAsLastSibling();
+            SetCrtActive(false);
         }
     }
 
@@ -338,6 +355,7 @@ public class GlitchMenu : MonoBehaviour
         if (creditsPanel != null)
         {
             creditsPanel.SetActive(false);
+            SetCrtActive(true);
         }
     }
 }
