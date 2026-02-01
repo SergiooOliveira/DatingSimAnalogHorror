@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     public bool IsDisguised { get; private set; } = false;
 
     private MaskData currentMask;
+    public MaskData CurrentMask => currentMask;
 
     private void Awake()
     {
