@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 156af64720c41f7428d84c5d7a09b89a, type: 3}
+  m_Name: Pedro
+  m_EditorClassIdentifier: 
+  maskID: 4
+  maskName: Pedro
+  maskPrefab: {fileID: 2631390448150694975, guid: e9b694ae51b0c1d4c9d352578190284e, type: 3}
+  maskIcon: {fileID: 21300000, guid: fccaee984674e04418ab1a69feb380d5, type: 3}
+  maskCorruptionLevel: 0
+  maskEffects: []

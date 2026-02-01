@@ -12,8 +12,9 @@ public class CarouselInventory : MonoBehaviour
     [Header("Perspective")]
     [SerializeField] private float minScale = 0.5f; // Size of items in the back
     [SerializeField] private float maxScale = 1.0f; // Size of items in the front
+    [SerializeField] private float xOffset = 50f;   // Moves the whole ring left/right
     [SerializeField] private float yOffset = 50f;   // Moves the whole ring up/down
-
+    
     [Header("Data")]
     [SerializeField] private GameObject spritePrefab; // A simple UI Image prefab
 
@@ -118,7 +119,7 @@ public class CarouselInventory : MonoBehaviour
             float depth = Mathf.InverseLerp(1f, -1f, Mathf.Sin(rad)); // 1.0 = Front, 0.0 = Back
 
             // C. Apply Position
-            item.rect.anchoredPosition = new Vector2(x, y + yOffset);
+            item.rect.anchoredPosition = new Vector2(x + xOffset, y + yOffset);
 
             // D. Apply Scale (Perspective)
             float scale = Mathf.Lerp(minScale, maxScale, depth);
