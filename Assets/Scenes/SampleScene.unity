@@ -386,6 +386,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterName: Sllort
   inkJson: {fileID: 4900000, guid: f86eb4a92aafdbb4485c2f925f17d1b5, type: 3}
+  monsterPortrait: {fileID: 0}
+  musicIntro: {fileID: 0}
+  musicLoop: {fileID: 0}
+  musicOutro: {fileID: 0}
 --- !u!114 &410995336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -737,6 +741,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterName: "Quim Z\xE9"
   inkJson: {fileID: 4900000, guid: 85b5dd37695766b4b891276ff247b536, type: 3}
+  monsterPortrait: {fileID: 0}
+  musicIntro: {fileID: 0}
+  musicLoop: {fileID: 0}
+  musicOutro: {fileID: 0}
 --- !u!4 &673310059 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7718437426789856823, guid: cf976643b9ed8ef4abbf795c86bdec9d, type: 3}
@@ -851,6 +859,7 @@ GameObject:
   - component: {fileID: 1502058994}
   - component: {fileID: 1502058993}
   - component: {fileID: 1502058995}
+  - component: {fileID: 1502058996}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -870,12 +879,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 886e1cb70036b6b44a2a1326ec021d3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueContainer: {fileID: 0}
   dialoguePanel: {fileID: 1942714466}
   dialogueText: {fileID: 4666987167443295566}
-  choices:
-  - {fileID: 4666987167443295569}
-  - {fileID: 4666987167443295568}
-  - {fileID: 4666987167443295567}
+  nameText: {fileID: 0}
+  portraitImage: {fileID: 0}
+  choiceButtons: []
+  bobSpeed: 2
+  bobDistance: 10
+  audioSource: {fileID: 0}
   submitAction: {fileID: 392368643174621059, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!4 &1502058994
 Transform:
@@ -908,6 +920,21 @@ MonoBehaviour:
   scrollAction: {fileID: 6240969308177333660, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   SpriteCarousel: {fileID: 1666088810}
   carouselScript: {fileID: 1666088812}
+--- !u!114 &1502058996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502058992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48a49eadafc6391468eed7f80d22e865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &1546286066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1306,6 +1333,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 463048195814594314, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 463048195814594314, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 463048195814594314, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1667969246760552636, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -1317,6 +1356,14 @@ PrefabInstance:
     - target: {fileID: 3732837210196266957, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140319758677022859, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140319758677022859, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4910511637954932554, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1362,6 +1409,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1502058993}
+    - target: {fileID: 5522367697860101338, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
+      propertyPath: playerData.playerMasks.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5522367697860101338, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
+      propertyPath: 'playerData.playerMasks.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 3c0984282aba8204a91e831cb846e7af, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1646,21 +1701,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &4666987167443295567 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1534329641433013078, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
-  m_PrefabInstance: {fileID: 1026995027793483393}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4666987167443295568 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2650296474886752073, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
-  m_PrefabInstance: {fileID: 1026995027793483393}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4666987167443295569 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7579498799741889461, guid: fa39cdc4c2f489c45a354218cfb2f9f2, type: 3}
-  m_PrefabInstance: {fileID: 1026995027793483393}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5631498596854314180
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public enum MaskCorruption { Baixa, Media, Alta }
+public enum MaskCorruption { Humana, Baixa, Media, Alta }
 
 public interface IMask
 {
