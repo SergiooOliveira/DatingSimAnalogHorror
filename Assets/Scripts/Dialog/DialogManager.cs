@@ -72,7 +72,7 @@ public class DialogManager : MonoBehaviour
                 if (btn != null)
                 {
                     btn.onClick.RemoveAllListeners();
-                    btn.onClick.AddListener(() => MakeChoice(index));
+                    btn.onClick.AddListener(() => { Debug.Log("Cliquei no botão: " + choiceButtons[index].name); MakeChoice(index); });
                 }
             }
         }
