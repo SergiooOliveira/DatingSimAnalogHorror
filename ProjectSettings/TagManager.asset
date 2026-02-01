@@ -15,8 +15,8 @@ TagManager:
   - Walls
   - Interactable
   - Inventory3D
-  - 
-  - 
+  - SpiritHidden
+  - SpiritVisible
   - 
   - 
   - 

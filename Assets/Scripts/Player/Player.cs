@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [Header("Mask System")]
     public bool IsDisguised { get; private set; } = false;
     private MaskData currentMask;
+    public MaskData CurrentMask => currentMask;
 
     [Header("References")]
     [SerializeField] private Transform mainCanvasTransform;
@@ -23,7 +24,7 @@ public class Player : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // Tenta encontrar o canvas se não estiver atribuído
+        // Tenta encontrar o canvas se nï¿½o estiver atribuï¿½do
         if (mainCanvasTransform == null)
         {
             Canvas canvas = FindObjectOfType<Canvas>();
@@ -36,23 +37,23 @@ public class Player : MonoBehaviour
         IsDisguised = state;
     }
 
-    // --- SISTEMA DE DIÁLOGO (VERSÃO ACTUALIZADA) ---
+    // --- SISTEMA DE DIï¿½LOGO (VERSï¿½O ACTUALIZADA) ---
     public void InteractWithMonster(Monster monster)
     {
         if (monster == null) return;
 
-        // Se o diálogo já estiver a decorrer, ignorar
+        // Se o diï¿½logo jï¿½ estiver a decorrer, ignorar
         if (DialogManager.Instance.dialogueIsPlaying) return;
 
         // Desativa o movimento do jogador
         PlayerController pc = GetComponent<PlayerController>();
         if (pc != null) pc.enabled = false;
 
-        // Inicia o diálogo usando a UI fixa da cena através do Manager
+        // Inicia o diï¿½logo usando a UI fixa da cena atravï¿½s do Manager
         DialogManager.Instance.EnterDialogueMode(monster);
     }
 
-    // --- SISTEMA DE MÁSCARAS ---
+    // --- SISTEMA DE Mï¿½SCARAS ---
     public void ReceiveMask(MaskData maskData)
     {
         if (playerData.AddMask(maskData))
@@ -64,7 +65,7 @@ public class Player : MonoBehaviour
 
     public void EquipMask(MaskData maskData)
     {
-        // Remove efeitos da máscara anterior
+        // Remove efeitos da mï¿½scara anterior
         if (currentMask != null && currentMask.MaskEffects != null)
         {
             foreach (MaskEffect effect in currentMask.MaskEffects)
@@ -73,7 +74,7 @@ public class Player : MonoBehaviour
 
         currentMask = maskData;
 
-        // Ativa efeitos da nova máscara
+        // Ativa efeitos da nova mï¿½scara
         if (currentMask != null && currentMask.MaskEffects != null)
         {
             foreach (MaskEffect effect in currentMask.MaskEffects)

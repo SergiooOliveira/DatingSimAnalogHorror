@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4430420889599778924
+--- !u!114 &-1582200203079873938
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,11 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<<< HEAD:Assets/FBX/Materials/floor.mat
-  m_Name: floor
-========
-  m_Name: QuinZeNormal
->>>>>>>> f2296c646a3c27b3b99c89aec8d7af203ea7f56b:Assets/Sprite/Entidades/Corpos/Materials/QuinZeNormal.mat
+  m_Name: capa_vazia
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -43,7 +39,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 2a39a8ea3f5404c4ebc0529bc076681f, type: 3}
+        m_Texture: {fileID: 2800000, guid: b2a8f216adee2cf4ba1be0fefe5415f5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -67,7 +63,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 2a39a8ea3f5404c4ebc0529bc076681f, type: 3}
+        m_Texture: {fileID: 2800000, guid: b2a8f216adee2cf4ba1be0fefe5415f5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -118,16 +114,12 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-<<<<<<<< HEAD:Assets/FBX/Materials/floor.mat
-    - _Metallic: 0.041
-========
     - _Metallic: 0
->>>>>>>> f2296c646a3c27b3b99c89aec8d7af203ea7f56b:Assets/Sprite/Entidades/Corpos/Materials/QuinZeNormal.mat
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.555
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -142,19 +134,3 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
-<<<<<<<< HEAD:Assets/FBX/Materials/floor.mat
---- !u!114 &2482959597643788141
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 10
-========
->>>>>>>> f2296c646a3c27b3b99c89aec8d7af203ea7f56b:Assets/Sprite/Entidades/Corpos/Materials/QuinZeNormal.mat
