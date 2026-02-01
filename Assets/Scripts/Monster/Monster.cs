@@ -7,17 +7,18 @@ public class Monster : MonoBehaviour
     [SerializeField] private TextAsset inkJson;
 
     [Header("Visuals - UI")]
-    [Tooltip("O Prefab do HUD específico. Certifica-te que a imagem lá dentro se chama 'Portrait'.")]
-    [SerializeField] private GameObject hudPrefab;
+    [Tooltip("A imagem (Portrait) que aparecerá no painel de diálogo.")]
+    [SerializeField] private Sprite monsterPortrait;
 
     [Header("Audio")]
     [SerializeField] private AudioClip musicIntro;
     [SerializeField] private AudioClip musicLoop;
     [SerializeField] private AudioClip musicOutro;
 
+    // Getters
     public string MonsterName => monsterName;
     public TextAsset InkJson => inkJson;
-    public GameObject HudPrefab => hudPrefab;
+    public Sprite MonsterPortrait => monsterPortrait;
     public AudioClip MusicIntro => musicIntro;
     public AudioClip MusicLoop => musicLoop;
     public AudioClip MusicOutro => musicOutro;
