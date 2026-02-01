@@ -3,159 +3,170 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class DialogManager : MonoBehaviour
 {
     public static DialogManager Instance;
 
-    [Header("Dialogue UI")]
+    [Header("UI References")]
+    [Tooltip("O GameObject vazio que contém o Nome, Imagem e Painel.")]
+    [SerializeField] private GameObject dialogueContainer;
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private Image portraitImage;
+    [SerializeField] private GameObject[] choiceButtons;
 
-    [Header("Choices UI")]
-    [SerializeField] private GameObject[] choices;
-    private TextMeshProUGUI[] choicesText;
-
+    [Header("Settings")]
+    [SerializeField] private float bobSpeed = 2.0f;
+    [SerializeField] private float bobDistance = 10.0f;
+    [SerializeField] private AudioSource audioSource;
     [SerializeField] private InputActionReference submitAction;
 
+    private TextMeshProUGUI[] choiceTexts;
     private Story currentStory;
-
-    // Flags
-    private bool isWaitingForExit = false;
     private bool waitingForClick = false;
     private bool inputCooldown = false;
+    private Vector3 portraitOriginalPos;
+    private Coroutine musicCoroutine;
 
     public bool dialogueIsPlaying { get; private set; }
 
-    #region Monobehaviour Methods
-    private void OnEnable()
-    {
-        if (submitAction != null) submitAction.action.Enable();
-    }
-
-    private void OnDisable()
-    {
-        if (submitAction != null) submitAction.action.Disable();
-    }
-
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     private void Start()
     {
         dialogueIsPlaying = false;
-        dialoguePanel.SetActive(false);
 
-        Cursor.lockState = CursorLockMode.None;
+        // Garante que tudo começa desativado
+        if (dialogueContainer != null) dialogueContainer.SetActive(false);
+        else if (dialoguePanel != null) dialoguePanel.SetActive(false);
 
-        choicesText = new TextMeshProUGUI[choices.Length];
-        int index = 0;
-        foreach (GameObject choice in choices)
+        // Inicializa referências de texto dos botões
+        InitializeChoicesText();
+
+        // Guarda a posição original para a animação de levitação
+        if (portraitImage != null)
+            portraitOriginalPos = portraitImage.rectTransform.anchoredPosition;
+    }
+
+    private void InitializeChoicesText()
+    {
+        choiceTexts = new TextMeshProUGUI[choiceButtons.Length];
+        for (int i = 0; i < choiceButtons.Length; i++)
         {
-            choicesText[index] = choice.GetComponentInChildren<TextMeshProUGUI>();
-            index++;
+            if (choiceButtons[i] != null)
+            {
+                choiceTexts[i] = choiceButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+
+                // Setup dos cliques uma única vez
+                int index = i;
+                Button btn = choiceButtons[i].GetComponent<Button>();
+                if (btn != null)
+                {
+                    btn.onClick.RemoveAllListeners();
+                    btn.onClick.AddListener(() => MakeChoice(index));
+                }
+            }
         }
     }
 
     private void Update()
     {
-        if (!dialogueIsPlaying || inputCooldown) return;
+        if (!dialogueIsPlaying) return;
 
-        // Suporte para Rato OU Tecla de Ação (ex: Espaço/Enter)
-        bool submitPressed = false;
-        if (submitAction != null && submitAction.action != null)
+        // Animação de "levitação" (Bobbing) da imagem do monstro
+        if (portraitImage != null && portraitImage.sprite != null)
         {
-            if (submitAction.action.WasPressedThisFrame()) submitPressed = true;
+            float newY = portraitOriginalPos.y + Mathf.Sin(Time.time * bobSpeed) * bobDistance;
+            portraitImage.rectTransform.anchoredPosition = new Vector2(portraitOriginalPos.x, newY);
         }
-        if (Input.GetMouseButtonDown(0)) submitPressed = true;
+
+        if (inputCooldown) return;
+
+        bool submitPressed = (submitAction != null && submitAction.action.WasPressedThisFrame()) || Input.GetMouseButtonDown(0);
 
         if (waitingForClick && submitPressed)
         {
             ContinueStory();
         }
     }
-    #endregion
 
-    #region Methods
-    public void EnterDialogueMode(TextAsset inkJson)
+    public void EnterDialogueMode(Monster monster)
     {
-        if (inkJson == null)
+        if (monster == null || monster.InkJson == null)
         {
-            Debug.LogError("DialogManager: InkJSON é nulo!");
+            Debug.LogWarning("DialogManager: Monstro ou InkJson não encontrados!");
             return;
         }
+
+        dialogueIsPlaying = true;
+
+        // --- 1. CONFIGURAR VISUAIS ---
+        // Atribui o nome do monstro
+        if (nameText != null) nameText.text = monster.MonsterName;
+
+        // Atribui o sprite do monstro à imagem na cena
+        if (portraitImage != null)
+        {
+            portraitImage.sprite = monster.MonsterPortrait;
+            // Garante que a imagem está visível (Alpha = 1)
+            var color = portraitImage.color;
+            color.a = monster.MonsterPortrait != null ? 1f : 0f;
+            portraitImage.color = color;
+        }
+
+        // Ativa o contentor principal que engloba tudo
+        if (dialogueContainer != null) dialogueContainer.SetActive(true);
+        if (dialoguePanel != null) dialoguePanel.SetActive(true);
+
+        // --- 2. CONFIGURAR INK ---
+        currentStory = new Story(monster.InkJson.text);
+
+        // --- 3. CONFIGURAR MÚSICA ---
+        if (musicCoroutine != null) StopCoroutine(musicCoroutine);
+        musicCoroutine = StartCoroutine(PlayMusicSequence(monster.MusicIntro, monster.MusicLoop));
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        currentStory = new Story(inkJson.text);
-        dialogueIsPlaying = true;
-        dialoguePanel.SetActive(true);
-
-        // Verifica se a história tem conteúdo antes de começar
-        if (!currentStory.canContinue && currentStory.currentChoices.Count == 0)
-        {
-            Debug.LogError("DialogManager: A história está vazia ou acabou imediatamente!");
-            StartCoroutine(ExitDialogueMode());
-            return;
-        }
-
         StartCoroutine(InputCooldownRoutine());
-
-        ContinueStory();
+        ContinueStory(monster);
     }
 
-    private IEnumerator InputCooldownRoutine()
-    {
-        inputCooldown = true;
-        // Reduzi para 0.2s para ser mais rápido (aparecer logo) mas seguro
-        yield return new WaitForSeconds(0.2f);
-        inputCooldown = false;
-    }
-
-    private void ContinueStory()
+    private void ContinueStory(Monster monster = null)
     {
         if (currentStory.canContinue)
         {
             dialogueText.text = currentStory.Continue();
-            HideChoices();
+            DisplayChoices();
 
-            bool isAutoAdvance = currentStory.currentTags.Contains("auto");
-
-            if (isAutoAdvance)
+            if (currentStory.currentTags.Contains("auto"))
             {
                 waitingForClick = false;
-                StartCoroutine(WaitAndAutoAdvance());
-            }
-            else if (currentStory.currentChoices.Count > 0)
-            {
-                waitingForClick = false;
-                DisplayChoices();
+                StartCoroutine(WaitAndAutoAdvance(monster));
             }
             else
             {
-                waitingForClick = true;
+                // Se houver escolhas, espera pela interação nos botões, senão espera clique geral
+                waitingForClick = currentStory.currentChoices.Count == 0;
             }
+        }
+        else if (currentStory.currentChoices.Count > 0)
+        {
+            DisplayChoices();
+            waitingForClick = false;
         }
         else
         {
-            // CORREÇÃO: Verifica se há escolhas pendentes antes de sair!
-            // Se o texto acabou mas há escolhas, mostramos as escolhas em vez de fechar.
-            if (currentStory.currentChoices.Count > 0)
-            {
-                waitingForClick = false;
-                DisplayChoices();
-            }
-            else
-            {
-                StartCoroutine(ExitDialogueMode());
-            }
+            StartCoroutine(ExitDialogueMode(monster != null ? monster.MusicOutro : null));
         }
     }
 
@@ -163,80 +174,83 @@ public class DialogManager : MonoBehaviour
     {
         List<Choice> currentChoices = currentStory.currentChoices;
 
-        if (currentChoices.Count > choices.Length)
+        for (int i = 0; i < choiceButtons.Length; i++)
         {
-            Debug.LogError("More choices were given than the UI can support.");
-        }
-
-        int index = 0;
-        foreach (Choice choice in currentChoices)
-        {
-            choices[index].SetActive(true);
-            choicesText[index].text = choice.text;
-            index++;
-        }
-
-        for (int i = index; i < choices.Length; i++)
-        {
-            choices[i].gameObject.SetActive(false);
-        }
-    }
-
-    private void HideChoices()
-    {
-        foreach (GameObject choice in choices)
-        {
-            choice.SetActive(false);
+            if (i < currentChoices.Count)
+            {
+                choiceButtons[i].SetActive(true);
+                choiceTexts[i].text = currentChoices[i].text;
+            }
+            else
+            {
+                choiceButtons[i].SetActive(false);
+            }
         }
     }
 
     public void MakeChoice(int choiceIndex)
     {
-        if (inputCooldown) return; // Segurança extra para evitar duplo clique
-
+        if (inputCooldown) return;
         currentStory.ChooseChoiceIndex(choiceIndex);
         ContinueStory();
     }
-    #endregion
 
-    #region Enumerators
-    private IEnumerator ExitDialogueMode()
+    private IEnumerator ExitDialogueMode(AudioClip outroClip)
     {
-        isWaitingForExit = false;
+        if (musicCoroutine != null) StopCoroutine(musicCoroutine);
+
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+            if (outroClip != null) audioSource.PlayOneShot(outroClip);
+        }
+
         yield return new WaitForSeconds(0.2f);
+
+        dialogueIsPlaying = false;
+
+        // Desativa o contentor principal
+        if (dialogueContainer != null) dialogueContainer.SetActive(false);
+        if (dialoguePanel != null) dialoguePanel.SetActive(false);
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        dialogueIsPlaying = false;
-        dialoguePanel.SetActive(false);
-        dialogueText.text = "";
-
         PlayerController pc = FindObjectOfType<PlayerController>();
-        if (pc != null)
+        if (pc != null) { pc.enabled = true; pc.SyncCameraRotation(); }
+    }
+
+    private IEnumerator PlayMusicSequence(AudioClip intro, AudioClip loop)
+    {
+        if (audioSource == null) yield break;
+        audioSource.Stop();
+
+        if (intro != null)
         {
-            // CORREÇÃO DE ROTAÇÃO:
-            // Alinha o Corpo do Jogador com a direção atual da Câmara (Monstro)
-            if (pc.cameraJogador != null)
-            {
-                Vector3 currentCamEuler = pc.cameraJogador.eulerAngles;
+            audioSource.clip = intro;
+            audioSource.loop = false;
+            audioSource.Play();
+            yield return new WaitForSeconds(intro.length);
+        }
 
-                // 1. Roda o Corpo (Y) para coincidir com a Câmara Global
-                pc.transform.rotation = Quaternion.Euler(0, currentCamEuler.y, 0);
-
-                // 2. Define a Câmara Local (X) para manter a inclinação (Pitch) mas zera o Y local
-                pc.cameraJogador.localRotation = Quaternion.Euler(currentCamEuler.x, 0, 0);
-            }
-
-            pc.enabled = true;
-            pc.SyncCameraRotation(); // Sincroniza a variável interna para não haver salto
+        if (loop != null)
+        {
+            audioSource.clip = loop;
+            audioSource.loop = true;
+            audioSource.Play();
         }
     }
 
-    private IEnumerator WaitAndAutoAdvance()
+    private IEnumerator InputCooldownRoutine()
     {
-        yield return new WaitForSeconds(1f);
-        ContinueStory();
+        inputCooldown = true;
+        yield return new WaitForSeconds(0.2f);
+        inputCooldown = false;
     }
-    #endregion
+
+    private IEnumerator WaitAndAutoAdvance(Monster monster)
+    {
+        yield return new WaitForSeconds(1.5f);
+        ContinueStory(monster);
+    }
 }
