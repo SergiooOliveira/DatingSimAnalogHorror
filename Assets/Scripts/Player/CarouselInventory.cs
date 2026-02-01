@@ -173,7 +173,7 @@ public class CarouselInventory : MonoBehaviour
 
         int actualIndex = (selectedIndex % spawnedItems.Count + spawnedItems.Count) % spawnedItems.Count;
 
-        Debug.Log($"actualIndex: {actualIndex} = selectedIndex: {selectedIndex} + spawnedItems.Count: {spawnedItems.Count}");
+        //Debug.Log($"actualIndex: {actualIndex} = selectedIndex: {selectedIndex} + spawnedItems.Count: {spawnedItems.Count}");
 
         return spawnedItems[actualIndex].maskData;
     }

@@ -13,3 +13,10 @@ MonoBehaviour:
   m_Name: SpiritSight
   m_EditorClassIdentifier: 
   description: 
+  overlayPrefab: {fileID: 83782913336406377, guid: 4d99589509483234c8d59bfa7948e98b, type: 3}
+  spiritVisibleLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  spiritHiddenLayer:
+    serializedVersion: 2
+    m_Bits: 1024

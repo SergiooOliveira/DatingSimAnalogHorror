@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
         if (wasAdded)
         {
             InventoryManager.Instance.AddMaskVisual(maskData);
-            Debug.Log($"Added a new Mask: {maskData.MaskName}");
+            //Debug.Log($"Added a new Mask: {maskData.MaskName}");
         }
     }
 
