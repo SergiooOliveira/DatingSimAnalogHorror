@@ -8,6 +8,9 @@ public class PlayerData
     public string playerName = "Hero";
     public List<MaskData> playerMasks = new List<MaskData>();
 
+    [Header("Diary Progression")]
+    public bool hasDiaryCover = false;
+
     public bool AddMask(MaskData newMask)
     {
         if (!playerMasks.Contains(newMask))

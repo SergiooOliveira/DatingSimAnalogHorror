@@ -29,6 +29,9 @@ public class StalkerAI : MonoBehaviour
     public UnityEvent onScareStart;
     public UnityEvent onCaughtPlayer;
 
+    [Header("Behaviour Modifiers")]
+    [SerializeField] private MaskData hatedMask;
+
     private NavMeshAgent _agent;
     private Renderer _renderer;
     private bool _isCaught = false;
@@ -61,7 +64,10 @@ public class StalkerAI : MonoBehaviour
     {
         if (_isCaught) return;
 
-        if (Player.Instance.IsDisguised)
+        bool playerIsDisguised = Player.Instance.IsDisguised;
+        bool isWearingHatedMask = (hatedMask != null && Player.Instance.CurrentMask == hatedMask);
+
+        if (playerIsDisguised && !isWearingHatedMask)
         {
             _isActive = false;
             StopMoving();

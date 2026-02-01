@@ -17,4 +17,5 @@ MonoBehaviour:
   maskPrefab: {fileID: 4091131877945317021, guid: 91ddf3acfaf320749a47977dcd9b2adc, type: 3}
   maskIcon: {fileID: 21300000, guid: 5800642648880694b9b3e0625d9b619a, type: 3}
   maskCorruptionLevel: 0
-  maskEffects: []
+  maskEffects:
+  - {fileID: 11400000, guid: a5d83200597ad8443849e9c0f58bcd1d, type: 2}
