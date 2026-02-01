@@ -22,10 +22,12 @@ public class MaskData : ScriptableObject, IMask
     public MaskCorruption MaskCorruptionLevel => maskCorruptionLevel;
     public List<MaskEffect> MaskEffects => maskEffects;
 
-    // Retorna a taxa de corrupção por segundo baseada no nível
+    // Retorna a taxa de corrupção por segundo baseada no nível.
+    // Níveis positivos aumentam a corrupção, níveis negativos (como Humana) recuperam.
     public float CorruptionRate => MaskCorruptionLevel switch
     {
-        MaskCorruption.Baixa => 1.0f,  // 100 segundos
+        MaskCorruption.Humana => -1.0f, // Recupera corrupção
+        MaskCorruption.Baixa => 1.0f,  // 100 segundos para corrupção total
         MaskCorruption.Media => 3.0f,  // ~33 segundos
         MaskCorruption.Alta => 7.0f,   // ~14 segundos
         _ => 0f
