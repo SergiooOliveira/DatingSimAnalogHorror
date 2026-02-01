@@ -47,15 +47,15 @@ public class InventoryManager : MonoBehaviour
             {
                 MaskData selected = carouselScript.GetSelectedMask();
 
-                if (selected != null)
+                if (selected == null)
                 {
-                    Debug.Log($"Closed Inventory. Selected Mask: {selected.MaskName}");
+                    Player.Instance.EquipMask(null);
+                }
+                else
+                {
+                    Player.Instance.EquipMask(selected);
                 }
             }
-
-            // Optional: Pause game or unlock cursor here
-            Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = isOpen;
         }
 
         if (isOpen && scrollAction != null)

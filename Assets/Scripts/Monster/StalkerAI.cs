@@ -64,6 +64,13 @@ public class StalkerAI : MonoBehaviour
         // Se j� apanhou o jogador, para tudo
         if (_isCaught) return;
 
+        if (Player.Instance.IsDisguised)
+        {
+            _isActive = false;
+            StopMoving();
+            return;
+        }
+
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
         if (!_isActive)

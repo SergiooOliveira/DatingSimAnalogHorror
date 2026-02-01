@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "New Mask", menuName = "Masks/Mask Data")]
+[CreateAssetMenu(fileName = "New Mask", menuName = "Mask/Mask Data")]
 public class MaskData : ScriptableObject, IMask
 {
     #region Serialized Fields
