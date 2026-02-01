@@ -4,9 +4,6 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.Rendering;
-using System.Reflection;
 
 public class GlitchMenu : MonoBehaviour
 {
@@ -33,15 +30,6 @@ public class GlitchMenu : MonoBehaviour
     public float expandDuration = 0.5f;
     public float silencePauseDuration = 1.0f;
 
-    [Header("CRT Control (URP)")]
-    public ScriptableRendererData rendererData;
-    public string featureName = "CRTRendererFeature";
-    public string propertyPath = "settings.distortion.curvature";
-    [Tooltip("Valor no Menu (Com Curvatura)")]
-    public float lockedCrtValue = 1.0f;
-    [Tooltip("Valor no Resto do Jogo (Sem Curvatura)")]
-    public float unlockedCrtValue = 0.0f;
-
     [Header("Word Glitch Effect")]
     public float shakeIntensity = 3.0f;
     public float shakeSpeed = 0.05f;
@@ -66,20 +54,8 @@ public class GlitchMenu : MonoBehaviour
     private int wordsClearedCount = 0;
     private Canvas _parentCanvas;
 
-    private ScriptableRendererFeature _targetFeature;
-
     private void Start()
     {
-        // Setup CRT: Força a curvatura a 1 ao entrar no menu
-        if (rendererData != null)
-        {
-            _targetFeature = rendererData.rendererFeatures.Find(f => f.name.Contains(featureName));
-            if (_targetFeature != null)
-            {
-                SetCrtValue(lockedCrtValue);
-            }
-        }
-
         _parentCanvas = GetComponentInParent<Canvas>();
         if (_parentCanvas == null) _parentCanvas = FindObjectOfType<Canvas>();
 
@@ -92,85 +68,15 @@ public class GlitchMenu : MonoBehaviour
         if (backButtonObject != null) backButtonObject.SetActive(false);
 
         if (titleText != null)
-        {
             titleText.transform.localScale = Vector3.zero;
-        }
 
         StartCoroutine(SpawnWordsRoutine());
-    }
-
-    // SEGURANÇA: Sempre que este objeto for desligado (mudança de cena ou Stop no editor)
-    // Força a curvatura a voltar a 0 (unlockedCrtValue)
-    private void OnDisable()
-    {
-        if (_targetFeature != null)
-        {
-            SetCrtValue(unlockedCrtValue);
-        }
     }
 
     private void Update()
     {
         if (gameUnlocked) return;
         CheckMouseInteraction();
-    }
-
-    void SetCrtValue(float value)
-    {
-        if (_targetFeature == null) return;
-        bool success = SetFieldRecursive(_targetFeature, propertyPath.Split('.'), 0, value);
-        if (success) _targetFeature.SetDirty();
-    }
-
-    float GetCrtValue()
-    {
-        if (_targetFeature == null) return 0f;
-        return GetFieldRecursive(_targetFeature, propertyPath.Split('.'), 0);
-    }
-
-    bool SetFieldRecursive(object target, string[] path, int index, float value)
-    {
-        if (target == null) return false;
-        System.Type type = target.GetType();
-        FieldInfo field = type.GetField(path[index], BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-        if (field == null) return false;
-
-        if (index == path.Length - 1)
-        {
-            if (field.FieldType == typeof(float))
-            {
-                field.SetValue(target, value);
-                return true;
-            }
-            return false;
-        }
-        else
-        {
-            object nextTarget = field.GetValue(target);
-            return SetFieldRecursive(nextTarget, path, index + 1, value);
-        }
-    }
-
-    float GetFieldRecursive(object target, string[] path, int index)
-    {
-        if (target == null) return 0f;
-        System.Type type = target.GetType();
-        FieldInfo field = type.GetField(path[index], BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-        if (field == null) return 0f;
-
-        if (index == path.Length - 1)
-        {
-            if (field.FieldType == typeof(float))
-                return (float)field.GetValue(target);
-            return 0f;
-        }
-        else
-        {
-            object nextTarget = field.GetValue(target);
-            return GetFieldRecursive(nextTarget, path, index + 1);
-        }
     }
 
     IEnumerator SpawnWordsRoutine()
@@ -180,7 +86,8 @@ public class GlitchMenu : MonoBehaviour
             SpawnFloatingWord();
             yield return new WaitForSeconds(spawnInterval);
 
-            if (spawnInterval > 0.5f) spawnInterval -= 0.1f;
+            if (spawnInterval > 0.5f)
+                spawnInterval -= 0.1f;
         }
     }
 
@@ -195,10 +102,12 @@ public class GlitchMenu : MonoBehaviour
 
         float width = spawnArea.rect.width;
         float height = spawnArea.rect.height;
+
         Vector2 randomPos = new Vector2(
             Random.Range(-width / 2, width / 2),
             Random.Range(-height / 2, height / 2)
         );
+
         rectComp.anchoredPosition = randomPos;
 
         if (textComp != null)
@@ -212,7 +121,8 @@ public class GlitchMenu : MonoBehaviour
             activeWords.Add(textComp);
         }
 
-        if (musicSource && whisperSound) musicSource.PlayOneShot(whisperSound, 0.5f);
+        if (musicSource && whisperSound)
+            musicSource.PlayOneShot(whisperSound, 0.5f);
     }
 
     IEnumerator FadeInWord(TextMeshProUGUI word)
@@ -245,14 +155,18 @@ public class GlitchMenu : MonoBehaviour
 
     void CheckMouseInteraction()
     {
-        if (_parentCanvas == null) _parentCanvas = FindObjectOfType<Canvas>();
+        if (_parentCanvas == null)
+            _parentCanvas = FindObjectOfType<Canvas>();
+
         if (_parentCanvas == null) return;
 
         Camera uiCamera = null;
+
         if (_parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
         {
             uiCamera = _parentCanvas.worldCamera;
-            if (uiCamera == null) uiCamera = Camera.main;
+            if (uiCamera == null)
+                uiCamera = Camera.main;
         }
 
         for (int i = activeWords.Count - 1; i >= 0; i--)
@@ -271,7 +185,11 @@ public class GlitchMenu : MonoBehaviour
                 uiCamera
             );
 
-            Vector2 wordScreenPoint = RectTransformUtility.WorldToScreenPoint(uiCamera, activeWords[i].transform.position);
+            Vector2 wordScreenPoint = RectTransformUtility.WorldToScreenPoint(
+                uiCamera,
+                activeWords[i].transform.position
+            );
+
             float dist = Vector2.Distance(Input.mousePosition, wordScreenPoint);
             bool mouseInsideRadius = dist < mouseInteractionRadius;
 
@@ -280,13 +198,9 @@ public class GlitchMenu : MonoBehaviour
                 DestroyWord(activeWords[i]);
 
                 if (!gameUnlocked)
-                {
                     activeWords.RemoveAt(i);
-                }
                 else
-                {
                     return;
-                }
             }
         }
     }
@@ -295,14 +209,14 @@ public class GlitchMenu : MonoBehaviour
     {
         wordsClearedCount++;
 
-        if (musicSource && glitchSound) musicSource.PlayOneShot(glitchSound);
+        if (musicSource && glitchSound)
+            musicSource.PlayOneShot(glitchSound);
 
-        if (word != null) Destroy(word.gameObject);
+        if (word != null)
+            Destroy(word.gameObject);
 
         if (wordsClearedCount >= wordsToClear && !gameUnlocked)
-        {
             StartCoroutine(UnlockSequence());
-        }
     }
 
     IEnumerator UnlockSequence()
@@ -310,12 +224,12 @@ public class GlitchMenu : MonoBehaviour
         gameUnlocked = true;
 
         foreach (var w in activeWords)
-        {
             if (w != null) Destroy(w.gameObject);
-        }
+
         activeWords.Clear();
 
-        if (musicSource != null) musicSource.Stop();
+        if (musicSource != null)
+            musicSource.Stop();
 
         if (musicSource != null && unlockSound != null)
         {
@@ -326,7 +240,8 @@ public class GlitchMenu : MonoBehaviour
 
         yield return new WaitForSeconds(silencePauseDuration);
 
-        if (musicSource != null) musicSource.Stop();
+        if (musicSource != null)
+            musicSource.Stop();
 
         UnlockGame();
     }
@@ -334,9 +249,7 @@ public class GlitchMenu : MonoBehaviour
     void UnlockGame()
     {
         if (titleText != null)
-        {
             StartCoroutine(AnimateExpand(titleText.transform));
-        }
 
         if (startButtonObject != null)
         {
@@ -397,11 +310,6 @@ public class GlitchMenu : MonoBehaviour
 
     public void StartGame(string sceneName)
     {
-        // Garante que a curvatura está a 0 antes de carregar a cena
-        if (_targetFeature != null)
-        {
-            SetCrtValue(unlockedCrtValue);
-        }
         SceneManager.LoadScene(sceneName);
     }
 
@@ -416,7 +324,6 @@ public class GlitchMenu : MonoBehaviour
         {
             creditsPanel.SetActive(true);
             creditsPanel.transform.SetAsLastSibling();
-            SetCrtActive(false);
         }
 
         if (backButtonObject != null)
@@ -429,22 +336,9 @@ public class GlitchMenu : MonoBehaviour
     public void CloseCredits()
     {
         if (creditsPanel != null)
-        {
             creditsPanel.SetActive(false);
-            SetCrtActive(true);
-        }
 
         if (backButtonObject != null)
-        {
             backButtonObject.SetActive(false);
-        }
-    }
-
-    void SetCrtActive(bool isActive)
-    {
-        if (_targetFeature != null)
-        {
-            _targetFeature.SetActive(isActive);
-        }
     }
 }
