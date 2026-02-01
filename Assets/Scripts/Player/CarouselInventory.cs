@@ -28,11 +28,16 @@ public class CarouselInventory : MonoBehaviour
         public GameObject obj;
         public RectTransform rect;
         public float currentDepth; // Used for sorting
+        public MaskData maskData;
     }
 
     public void SpawnMaskVisual(MaskData data)
     {
-        if (data == null || data.MaskPrefab == null) return;
+        if (data == null || data.MaskPrefab == null)
+        {
+            Debug.Log($"No data or prefab found for {data.MaskName}");
+            return;
+        }
 
         // 1. Create the UI Image
         GameObject newItem = Instantiate(spritePrefab, transform);
@@ -42,6 +47,8 @@ public class CarouselInventory : MonoBehaviour
         Image img = newItem.GetComponent<Image>();
 
         if  (data.MaskIcon != null) img.sprite = data.MaskIcon;
+        else Debug.LogWarning($"MaskData for {data.MaskName} does not have a MaskIcon assigned.");
+
         img.preserveAspect = true;
 
         // *NOTE: If your MaskData has a sprite field, use: img.sprite = data.maskSprite;
@@ -53,7 +60,8 @@ public class CarouselInventory : MonoBehaviour
         CarouselItem item = new CarouselItem
         {
             obj = newItem,
-            rect = newItem.GetComponent<RectTransform>()
+            rect = newItem.GetComponent<RectTransform>(),
+            maskData = data
         };
         spawnedItems.Add(item);
 
@@ -147,7 +155,7 @@ public class CarouselInventory : MonoBehaviour
 
         // Rotate the wheel so the selected item is at -90 degrees (Front)
         float angleStep = 360f / spawnedItems.Count;
-        targetAngle = -selectedIndex * angleStep + 90f;
+        targetAngle = -selectedIndex * angleStep - 90f;
         // +90 offset ensures index 0 starts at the bottom (Front)
     }
 
@@ -155,6 +163,17 @@ public class CarouselInventory : MonoBehaviour
     {
         // Reset target to align smoothly
         float angleStep = 360f / spawnedItems.Count;
-        targetAngle = -selectedIndex * angleStep + 90f;
+        targetAngle = -selectedIndex * angleStep - 90f;
+    }
+
+    public MaskData GetSelectedMask()
+    {
+        if (spawnedItems.Count == 0) return null;
+
+        int actualIndex = (selectedIndex % spawnedItems.Count + spawnedItems.Count) % spawnedItems.Count;
+
+        Debug.Log($"actualIndex: {actualIndex} = selectedIndex: {selectedIndex} + spawnedItems.Count: {spawnedItems.Count}");
+
+        return spawnedItems[actualIndex].maskData;
     }
 }

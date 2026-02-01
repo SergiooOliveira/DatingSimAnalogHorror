@@ -43,6 +43,16 @@ public class InventoryManager : MonoBehaviour
             isOpen = !isOpen;
             SpriteCarousel.SetActive(isOpen);
 
+            if (!isOpen)
+            {
+                MaskData selected = carouselScript.GetSelectedMask();
+
+                if (selected != null)
+                {
+                    Debug.Log($"Closed Inventory. Selected Mask: {selected.MaskName}");
+                }
+            }
+
             // Optional: Pause game or unlock cursor here
             Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = isOpen;
