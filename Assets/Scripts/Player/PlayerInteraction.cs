@@ -53,8 +53,8 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         closestDistance = distanceToTarget;
 
-                        // CORREÇÃO:
-                        // Em vez de chamar o DialogManager diretamente com InkJson (que dá erro),
+                        // CORREï¿½ï¿½O:
+                        // Em vez de chamar o DialogManager diretamente com InkJson (que dï¿½ erro),
                         // chamamos o Player.Instance.InteractWithMonster passando o monstro inteiro.
                         if (hit.TryGetComponent<Monster>(out Monster monster))
                         {
@@ -69,6 +69,14 @@ public class PlayerInteraction : MonoBehaviour
                             {
                                 Player.Instance.ReceiveMask(mask.MaskData);
                                 Destroy(mask.gameObject);
+                            }
+                        }
+                        else if (hit.TryGetComponent<DiaryItem>(out DiaryItem diaryItem))
+                        {
+                            if (Player.Instance != null)
+                            {
+                                Player.Instance.InteractWithDiaryItem(diaryItem);
+                                Debug.Log("Interacted with Diary page " + diaryItem.PageNumber);
                             }
                         }
                     }

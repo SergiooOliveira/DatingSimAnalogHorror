@@ -32,6 +32,26 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (playerData.playerMasks.Count== 0)
+        {
+            Debug.LogWarning("Player has no masks in PlayerData at start.");
+        }
+
+        if (InventoryManager.Instance != null)
+        {
+            foreach (MaskData mask in playerData.playerMasks)
+            {
+                InventoryManager.Instance.AddMaskVisual(mask);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("InventoryManager instance not found at Player Start.");
+        }
+    }
+
     public void SetDisguise(bool state)
     {
         IsDisguised = state;
@@ -81,4 +101,29 @@ public class Player : MonoBehaviour
                 effect.ActivateEffect(this.gameObject);
         }
     }
+
+    #region Diary
+    // --- DIARY SYSTEM ---
+    public void InteractWithDiaryItem(DiaryItem item)
+    {
+        item.Interact();
+    }
+
+    public void CollectDiaryCover()
+    {
+        playerData.hasDiaryCover = true;
+        // Optional: Trigger UI "New Objective: Find 8 Pages"
+    }
+
+    public void CollectDiaryPage(int pageNumber)
+    {
+        playerData.AddPage();
+
+        if (playerData.pagesCollected >= PlayerData.totalPages)
+        {
+            Debug.Log("DIARY COMPLETED! You found the truth.");
+            // Trigger Ending or XP Reward
+        }
+    }
+    #endregion
 }

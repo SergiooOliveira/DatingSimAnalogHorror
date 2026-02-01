@@ -531,6 +531,7 @@ MonoBehaviour:
   playerData:
     playerName: Hero
     playerMasks: []
+    hasDiaryCover: 0
   mainCanvasTransform: {fileID: 2964209586126235466}
 --- !u!114 &4785074037807171598
 MonoBehaviour:
