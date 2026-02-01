@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Configura��o de Input")]
+    [Header("Configuração de Input")]
     public InputActionReference moveAction;
     public InputActionReference lookAction;
     public InputActionReference sprintAction;
@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public float gravidade = 20.0f;
     public float alturaPulo = 1.5f;
 
-    [Header("C�mara")]
+    [Header("Câmara")]
     public Transform cameraJogador;
     public float sensibilidadeMouse = 15.0f;
     public float limiteOlharCimaBaixo = 80.0f;
@@ -32,15 +32,19 @@ public class PlayerController : MonoBehaviour
     private float timerBob = 0;
     private float alturaPadraoCamera;
 
-    void Start()
+    void Awake()
     {
         controller = GetComponent<CharacterController>();
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         if (cameraJogador != null)
             alturaPadraoCamera = cameraJogador.transform.localPosition.y;
+    }
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        SyncCameraRotation(); // Garante que começamos alinhados
     }
 
     void OnEnable()
@@ -49,6 +53,11 @@ public class PlayerController : MonoBehaviour
         if (lookAction) lookAction.action.Enable();
         if (sprintAction) sprintAction.action.Enable();
         if (jumpAction) jumpAction.action.Enable();
+
+        // IMPORTANTE: Quando o script é reativado (após o diálogo),
+        // sincronizamos a rotação interna com a rotação atual da câmara.
+        // Isto impede que a câmara "salte" para trás.
+        SyncCameraRotation();
     }
 
     void OnDisable()
@@ -59,9 +68,24 @@ public class PlayerController : MonoBehaviour
         if (jumpAction) jumpAction.action.Disable();
     }
 
+    // Nova função para impedir o "Snap Back"
+    public void SyncCameraRotation()
+    {
+        if (cameraJogador != null)
+        {
+            // Recupera a rotação X atual da câmara (para não resetar para 0)
+            Vector3 currentRotation = cameraJogador.localRotation.eulerAngles;
+            rotacaoX = currentRotation.x;
+
+            // Corrige o ângulo se passar de 180 (Unity usa 0-360, nosso clamp usa -80 a 80)
+            if (rotacaoX > 180) rotacaoX -= 360;
+        }
+    }
+
     void Update()
     {
-        if (DialogManager.Instance.dialogueIsPlaying) return;
+        // Se o diálogo estiver a tocar, paramos o update (segurança extra)
+        if (DialogManager.Instance != null && DialogManager.Instance.dialogueIsPlaying) return;
 
         MoverJogador();
         RodarCamera();
@@ -124,11 +148,7 @@ public class PlayerController : MonoBehaviour
         if (inputMove.magnitude > 0.1f && controller.isGrounded)
         {
             timerBob += Time.deltaTime * velocidadeBob;
-
-            // C�lculo da posi��o da cabe�a
             float posicaoY = Mathf.Sin(timerBob);
-
-            // Move a c�mara visualmente
             float novaPosicaoY = alturaPadraoCamera + posicaoY * forcaBob;
             cameraJogador.transform.localPosition = new Vector3(cameraJogador.transform.localPosition.x, novaPosicaoY, cameraJogador.transform.localPosition.z);
         }
