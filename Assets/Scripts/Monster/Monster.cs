@@ -2,17 +2,23 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
-    #region Variables
-    // Serialized Fields
+    [Header("Identity")]
     [SerializeField] private string monsterName;
     [SerializeField] private TextAsset inkJson;
 
-    [Header("Visuals")]
+    [Header("Visuals - UI")]
+    [Tooltip("O Prefab do HUD específico. Certifica-te que a imagem lá dentro se chama 'Portrait'.")]
     [SerializeField] private GameObject hudPrefab;
 
-    // Public Properties
+    [Header("Audio")]
+    [SerializeField] private AudioClip musicIntro;
+    [SerializeField] private AudioClip musicLoop;
+    [SerializeField] private AudioClip musicOutro;
+
     public string MonsterName => monsterName;
     public TextAsset InkJson => inkJson;
     public GameObject HudPrefab => hudPrefab;
-    #endregion
+    public AudioClip MusicIntro => musicIntro;
+    public AudioClip MusicLoop => musicLoop;
+    public AudioClip MusicOutro => musicOutro;
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
-using TMPro; // Necessário para TextMeshProUGUI
-using System.Collections.Generic; // Necessário para Listas
-using UnityEngine.UI; // Necessário para Button
+using TMPro;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -11,20 +11,15 @@ public class Player : MonoBehaviour
     public PlayerData PlayerData => playerData;
 
     public bool IsDisguised { get; private set; } = false;
-
     private MaskData currentMask;
 
-    // Referência ao Canvas onde vamos criar o HUD do monstro
     [SerializeField] private Transform mainCanvasTransform;
 
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
 
-        // Tenta encontrar o Canvas automaticamente se não tiveres arrastado no Inspector
         if (mainCanvasTransform == null)
         {
             Canvas canvas = FindObjectOfType<Canvas>();
@@ -32,87 +27,77 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void SetDisguise(bool state)
-    {
-        IsDisguised = state;
-        Debug.Log(state ? "Player is now disguised." : "Player is no longer disguised.");
-    }
+    public void SetDisguise(bool state) { IsDisguised = state; }
 
     public void InteractWithMonster(Monster monster)
     {
-        // SAFEGUARD: Se já houver um diálogo a decorrer, ignoramos novas chamadas.
-        // Isto impede que o HUD seja criado duas vezes se o StalkerAI chamar a função e o Evento também.
         if (DialogManager.Instance.dialogueIsPlaying) return;
 
-        // 1. Verifica se o monstro tem um HUD específico e se temos onde o pôr
+        // 1. INSTANCIAR HUD
         if (monster.HudPrefab != null && mainCanvasTransform != null)
         {
-            // 2. Instancia o HUD visual do monstro no Canvas
             GameObject spawnedHUD = Instantiate(monster.HudPrefab, mainCanvasTransform);
 
-            // 3. Procura os componentes automaticamente dentro do HUD novo
-            // Assume-se que o primeiro TMP_Text é o do diálogo
+            // 2. BUSCA AUTOMÁTICA (Sem scripts de interface)
+
+            // A. Encontrar Texto (Assume que o primeiro TMP que encontrar é o dialogo)
             TextMeshProUGUI foundText = spawnedHUD.GetComponentInChildren<TextMeshProUGUI>();
 
-            // Assume-se que os botões têm o componente Button do Unity UI
+            // B. Encontrar Botões (Todos os botões dentro do prefab)
             Button[] foundButtonsComponents = spawnedHUD.GetComponentsInChildren<Button>(true);
             List<GameObject> foundButtonsGO = new List<GameObject>();
+            foreach (var btn in foundButtonsComponents) foundButtonsGO.Add(btn.gameObject);
 
-            foreach (var btn in foundButtonsComponents)
+            // C. Encontrar Retrato (Procura um objeto chamado "Portrait" que tenha uma Imagem)
+            Image foundPortrait = null;
+            Image[] allImages = spawnedHUD.GetComponentsInChildren<Image>(true);
+            foreach (var img in allImages)
             {
-                foundButtonsGO.Add(btn.gameObject);
+                if (img.gameObject.name == "Portrait") // <--- REGRA DE NOME
+                {
+                    foundPortrait = img;
+                    break;
+                }
             }
 
+            // 3. Enviar para o Manager
             if (foundText != null && foundButtonsGO.Count > 0)
             {
-                // 4. Envia a nova UI para o DialogManager
-                // O spawnedHUD é passado como 'dialoguePanel' e como 'rootObject' para ser destruído no fim
-                DialogManager.Instance.SwapDialogueUI(spawnedHUD, foundText, foundButtonsGO.ToArray(), spawnedHUD);
+                DialogManager.Instance.SwapDialogueUI(
+                    spawnedHUD,
+                    foundText,
+                    foundPortrait, // Pode ser nulo se não encontrares, o Manager lida com isso
+                    foundButtonsGO.ToArray(),
+                    spawnedHUD
+                );
             }
             else
             {
-                Debug.LogWarning($"Player: Instanciei o HUD de {monster.MonsterName}, mas não encontrei Texto ou Botões suficientes lá dentro.");
+                Debug.LogWarning($"Player: O HUD de {monster.MonsterName} foi criado mas não encontrei TextMeshPro ou Botões lá dentro.");
             }
         }
         else
         {
-            // Se não houver prefab, usa a UI padrão que já está no DialogManager
-            Debug.Log("Player: A usar UI padrão (Monstro sem prefab ou Canvas não encontrado).");
+            Debug.Log("Player: A usar UI Padrão.");
         }
 
-        // 5. Inicia o diálogo com a história do monstro
-        DialogManager.Instance.EnterDialogueMode(monster.InkJson);
+        // 4. Iniciar
+        DialogManager.Instance.EnterDialogueMode(monster);
     }
 
     public void ReceiveMask(MaskData maskData)
     {
-        bool wasAdded = playerData.AddMask(maskData);
-
-        if (wasAdded)
-        {
-            InventoryManager.Instance.AddMaskVisual(maskData);
-            Debug.Log($"Added a new Mask: {maskData.MaskName}");
-        }
+        if (playerData.AddMask(maskData)) InventoryManager.Instance.AddMaskVisual(maskData);
     }
 
     public void EquipMask(MaskData maskData)
     {
         if (currentMask != null && currentMask.MaskEffects != null)
-        {
-            foreach (MaskEffect effect in currentMask.MaskEffects)
-            {
-                effect.DeactivateEffect(this.gameObject);
-            }
-        }
+            foreach (MaskEffect effect in currentMask.MaskEffects) effect.DeactivateEffect(this.gameObject);
 
         currentMask = maskData;
 
         if (currentMask != null && currentMask.MaskEffects != null)
-        {
-            foreach (MaskEffect effect in currentMask.MaskEffects)
-            {
-                effect.ActivateEffect(this.gameObject);
-            }
-        }
+            foreach (MaskEffect effect in currentMask.MaskEffects) effect.ActivateEffect(this.gameObject);
     }
 }

@@ -52,12 +52,24 @@ public class PlayerInteraction : MonoBehaviour
                     if (distanceToTarget < closestDistance)
                     {
                         closestDistance = distanceToTarget;
+
+                        // CORREÇÃO:
+                        // Em vez de chamar o DialogManager diretamente com InkJson (que dá erro),
+                        // chamamos o Player.Instance.InteractWithMonster passando o monstro inteiro.
                         if (hit.TryGetComponent<Monster>(out Monster monster))
-                            DialogManager.Instance.EnterDialogueMode(monster.InkJson);
+                        {
+                            if (Player.Instance != null)
+                            {
+                                Player.Instance.InteractWithMonster(monster);
+                            }
+                        }
                         else if (hit.TryGetComponent<Mask>(out Mask mask))
                         {
-                            Player.Instance.ReceiveMask(mask.MaskData);
-                            Destroy(mask.gameObject);
+                            if (Player.Instance != null)
+                            {
+                                Player.Instance.ReceiveMask(mask.MaskData);
+                                Destroy(mask.gameObject);
+                            }
                         }
                     }
                 }
