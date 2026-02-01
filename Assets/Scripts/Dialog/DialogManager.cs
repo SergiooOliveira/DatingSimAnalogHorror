@@ -2,7 +2,6 @@ using Ink.Runtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,6 +24,8 @@ public class DialogManager : MonoBehaviour
     // Flags
     private bool isWaitingForExit = false;
     private bool waitingForClick = false;
+    private bool inputCooldown = false;
+
     public bool dialogueIsPlaying { get; private set; }
 
     #region Monobehaviour Methods
@@ -37,6 +38,7 @@ public class DialogManager : MonoBehaviour
     {
         if (submitAction != null) submitAction.action.Disable();
     }
+
     private void Awake()
     {
         if (Instance == null)
@@ -47,8 +49,11 @@ public class DialogManager : MonoBehaviour
 
     private void Start()
     {
-        Swapper(false);
+        dialogueIsPlaying = false;
+        dialoguePanel.SetActive(false);
+
         Cursor.lockState = CursorLockMode.None;
+
         choicesText = new TextMeshProUGUI[choices.Length];
         int index = 0;
         foreach (GameObject choice in choices)
@@ -60,7 +65,17 @@ public class DialogManager : MonoBehaviour
 
     private void Update()
     {
-        if (waitingForClick && Input.GetMouseButtonDown(0))
+        if (!dialogueIsPlaying || inputCooldown) return;
+
+        // Suporte para Rato OU Tecla de Ação (ex: Espaço/Enter)
+        bool submitPressed = false;
+        if (submitAction != null && submitAction.action != null)
+        {
+            if (submitAction.action.WasPressedThisFrame()) submitPressed = true;
+        }
+        if (Input.GetMouseButtonDown(0)) submitPressed = true;
+
+        if (waitingForClick && submitPressed)
         {
             ContinueStory();
         }
@@ -68,22 +83,40 @@ public class DialogManager : MonoBehaviour
     #endregion
 
     #region Methods
-    public void EnterDialogueMode (TextAsset inkJson)
+    public void EnterDialogueMode(TextAsset inkJson)
     {
-        
+        if (inkJson == null)
+        {
+            Debug.LogError("DialogManager: InkJSON é nulo!");
+            return;
+        }
+
         Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         currentStory = new Story(inkJson.text);
-        Swapper(true);
+        dialogueIsPlaying = true;
+        dialoguePanel.SetActive(true);
+
+        // Verifica se a história tem conteúdo antes de começar
+        if (!currentStory.canContinue && currentStory.currentChoices.Count == 0)
+        {
+            Debug.LogError("DialogManager: A história está vazia ou acabou imediatamente!");
+            StartCoroutine(ExitDialogueMode());
+            return;
+        }
+
+        StartCoroutine(InputCooldownRoutine());
 
         ContinueStory();
     }
 
-
-    private void Swapper(bool state)
+    private IEnumerator InputCooldownRoutine()
     {
-        dialogueIsPlaying = state;
-        dialoguePanel.SetActive(state);
+        inputCooldown = true;
+        // Reduzi para 0.2s para ser mais rápido (aparecer logo) mas seguro
+        yield return new WaitForSeconds(0.2f);
+        inputCooldown = false;
     }
 
     private void ContinueStory()
@@ -92,7 +125,7 @@ public class DialogManager : MonoBehaviour
         {
             dialogueText.text = currentStory.Continue();
             HideChoices();
-            
+
             bool isAutoAdvance = currentStory.currentTags.Contains("auto");
 
             if (isAutoAdvance)
@@ -108,11 +141,21 @@ public class DialogManager : MonoBehaviour
             else
             {
                 waitingForClick = true;
-            }            
+            }
         }
         else
         {
-            StartCoroutine(ExitDialogueMode());
+            // CORREÇÃO: Verifica se há escolhas pendentes antes de sair!
+            // Se o texto acabou mas há escolhas, mostramos as escolhas em vez de fechar.
+            if (currentStory.currentChoices.Count > 0)
+            {
+                waitingForClick = false;
+                DisplayChoices();
+            }
+            else
+            {
+                StartCoroutine(ExitDialogueMode());
+            }
         }
     }
 
@@ -122,11 +165,10 @@ public class DialogManager : MonoBehaviour
 
         if (currentChoices.Count > choices.Length)
         {
-            Debug.LogError("More choices were given than the UI can support. Number of choices given: " + currentChoices.Count);
+            Debug.LogError("More choices were given than the UI can support.");
         }
 
         int index = 0;
-
         foreach (Choice choice in currentChoices)
         {
             choices[index].SetActive(true);
@@ -150,6 +192,8 @@ public class DialogManager : MonoBehaviour
 
     public void MakeChoice(int choiceIndex)
     {
+        if (inputCooldown) return; // Segurança extra para evitar duplo clique
+
         currentStory.ChooseChoiceIndex(choiceIndex);
         ContinueStory();
     }
@@ -160,9 +204,33 @@ public class DialogManager : MonoBehaviour
     {
         isWaitingForExit = false;
         yield return new WaitForSeconds(0.2f);
+
         Cursor.visible = false;
-        Swapper(false);
+        Cursor.lockState = CursorLockMode.Locked;
+
+        dialogueIsPlaying = false;
+        dialoguePanel.SetActive(false);
         dialogueText.text = "";
+
+        PlayerController pc = FindObjectOfType<PlayerController>();
+        if (pc != null)
+        {
+            // CORREÇÃO DE ROTAÇÃO:
+            // Alinha o Corpo do Jogador com a direção atual da Câmara (Monstro)
+            if (pc.cameraJogador != null)
+            {
+                Vector3 currentCamEuler = pc.cameraJogador.eulerAngles;
+
+                // 1. Roda o Corpo (Y) para coincidir com a Câmara Global
+                pc.transform.rotation = Quaternion.Euler(0, currentCamEuler.y, 0);
+
+                // 2. Define a Câmara Local (X) para manter a inclinação (Pitch) mas zera o Y local
+                pc.cameraJogador.localRotation = Quaternion.Euler(currentCamEuler.x, 0, 0);
+            }
+
+            pc.enabled = true;
+            pc.SyncCameraRotation(); // Sincroniza a variável interna para não haver salto
+        }
     }
 
     private IEnumerator WaitAndAutoAdvance()
