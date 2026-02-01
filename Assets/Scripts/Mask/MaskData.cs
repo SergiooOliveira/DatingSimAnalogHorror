@@ -21,20 +21,17 @@ public class MaskData : ScriptableObject, IMask
     public Sprite MaskIcon => maskIcon;
     public MaskCorruption MaskCorruptionLevel => maskCorruptionLevel;
     public List<MaskEffect> MaskEffects => maskEffects;
-    #endregion
 
-    #region Runtime Fields
-
-    #endregion
-
-    #region Methods
-    public void Initialize()
+    // Retorna a taxa de corrupção por segundo baseada no nível
+    public float CorruptionRate => MaskCorruptionLevel switch
     {
-
-    }
-    public void Corruption()
-    {
-        
-    }
+        MaskCorruption.Baixa => 1.0f,  // 100 segundos
+        MaskCorruption.Media => 3.0f,  // ~33 segundos
+        MaskCorruption.Alta => 7.0f,   // ~14 segundos
+        _ => 0f
+    };
     #endregion
+
+    public void Initialize() { }
+    public void Corruption() { /* Lógica extra se necessário */ }
 }
