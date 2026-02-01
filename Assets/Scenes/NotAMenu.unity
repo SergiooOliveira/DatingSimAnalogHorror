@@ -637,7 +637,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &372767639
 RectTransform:
   m_ObjectHideFlags: 0
@@ -752,12 +752,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf3f68c26b6073419a540e29c8aa0ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staffName: Marco
-  hiddenRole: Artist
+  staffName: "C\xEDcero Serre"
+  hiddenRole: He said "the Level Blockout is easy"
   writingSpeed: 0.05
   separator: ' - '
   nameColor: {r: 0, g: 0, b: 0, a: 1}
-  roleColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  roleColor: {r: 0, g: 0, b: 0, a: 1}
   useHandwritingWiggle: 1
   audioSource: {fileID: 0}
   scribblingSound: {fileID: 0}
@@ -781,7 +781,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Marco
+  m_text: "C\xEDcero"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81373dd13bdbe764380a0ffe4909cb93, type: 2}
   m_sharedMaterial: {fileID: -3447213043664507192, guid: 81373dd13bdbe764380a0ffe4909cb93, type: 2}
@@ -1507,12 +1507,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf3f68c26b6073419a540e29c8aa0ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staffName: Marco
-  hiddenRole: Green
+  staffName: Maria Costa
+  hiddenRole: '"Texture is my passion" she said'
   writingSpeed: 0.05
   separator: ' - '
   nameColor: {r: 0, g: 0, b: 0, a: 1}
-  roleColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  roleColor: {r: 0, g: 0, b: 0, a: 1}
   useHandwritingWiggle: 1
   audioSource: {fileID: 0}
   scribblingSound: {fileID: 0}
@@ -1536,7 +1536,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Marco
+  m_text: Maria Costa
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81373dd13bdbe764380a0ffe4909cb93, type: 2}
   m_sharedMaterial: {fileID: -3447213043664507192, guid: 81373dd13bdbe764380a0ffe4909cb93, type: 2}
@@ -1665,12 +1665,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf3f68c26b6073419a540e29c8aa0ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staffName: Marco
-  hiddenRole: Artist
+  staffName: Marco Sousa
+  hiddenRole: He said "I draw what I see"
   writingSpeed: 0.05
   separator: ' - '
   nameColor: {r: 0, g: 0, b: 0, a: 1}
-  roleColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  roleColor: {r: 0, g: 0, b: 0, a: 1}
   useHandwritingWiggle: 1
   audioSource: {fileID: 0}
   scribblingSound: {fileID: 0}
@@ -1863,12 +1863,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf3f68c26b6073419a540e29c8aa0ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staffName: Marco
-  hiddenRole: Artist
+  staffName: Joel Salvador
+  hiddenRole: '"Weight paint is perfect" he said '
   writingSpeed: 0.05
   separator: ' - '
   nameColor: {r: 0, g: 0, b: 0, a: 1}
-  roleColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  roleColor: {r: 0, g: 0, b: 0, a: 1}
   useHandwritingWiggle: 1
   audioSource: {fileID: 0}
   scribblingSound: {fileID: 0}
@@ -1892,7 +1892,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Marco
+  m_text: Joel
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81373dd13bdbe764380a0ffe4909cb93, type: 2}
   m_sharedMaterial: {fileID: -3447213043664507192, guid: 81373dd13bdbe764380a0ffe4909cb93, type: 2}
@@ -2226,7 +2226,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1725917320}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2235,8 +2235,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 768, y: -436}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 768, y: -365}
+  m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1725917322
 MonoBehaviour:
@@ -2258,7 +2258,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 0}
+  m_Texture: {fileID: 2800000, guid: 67e92980bcf7e074caf1ba58bb8061b5, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -2391,8 +2391,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf3f68c26b6073419a540e29c8aa0ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staffName: Marco
-  hiddenRole: Artist
+  staffName: "S\xE9rgio Oliveira"
+  hiddenRole: 'He said "I like java script" '
   writingSpeed: 0.05
   separator: ' - '
   nameColor: {r: 0, g: 0, b: 0, a: 1}
@@ -2420,7 +2420,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Marco
+  m_text: "S\xE9rgio "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81373dd13bdbe764380a0ffe4909cb93, type: 2}
   m_sharedMaterial: {fileID: -3447213043664507192, guid: 81373dd13bdbe764380a0ffe4909cb93, type: 2}
@@ -2555,7 +2555,7 @@ MonoBehaviour:
   writingSpeed: 0.05
   separator: ' - '
   nameColor: {r: 0, g: 0, b: 0, a: 1}
-  roleColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  roleColor: {r: 0, g: 0, b: 0, a: 1}
   useHandwritingWiggle: 1
   audioSource: {fileID: 1915066947}
   scribblingSound: {fileID: 8300000, guid: 3b223aec4e50d3944b05d68fcdc88f62, type: 3}
