@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 156af64720c41f7428d84c5d7a09b89a, type: 3}
-  m_Name: BlackTears
+  m_Name: Pedro
   m_EditorClassIdentifier: 
-  maskID: 0
-  maskName: 
-  maskPrefab: {fileID: 8350874516995450638, guid: 0502adca9e9a49a48aea59bfe09e5c63, type: 3}
-  maskIcon: {fileID: 21300000, guid: 446f7f06f12473b45be429ea224b8ff5, type: 3}
+  maskID: 4
+  maskName: Pedro
+  maskPrefab: {fileID: 2631390448150694975, guid: e9b694ae51b0c1d4c9d352578190284e, type: 3}
+  maskIcon: {fileID: 21300000, guid: fccaee984674e04418ab1a69feb380d5, type: 3}
   maskCorruptionLevel: 0
   maskEffects: []

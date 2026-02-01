@@ -7,6 +7,9 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerData playerData = new PlayerData();
     public PlayerData PlayerData => playerData;
 
+    public bool IsDisguised { get; private set; } = false;
+
+    private MaskData currentMask;
 
     private void Awake()
     {
@@ -14,6 +17,12 @@ public class Player : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+    }
+
+    public void SetDisguise (bool state)
+    {
+        IsDisguised = state;
+        Debug.Log(state ? "Player is now disguised." : "Player is no longer disguised.");
     }
 
     public void InteractWithMonster(Monster monster)
@@ -28,7 +37,28 @@ public class Player : MonoBehaviour
         if (wasAdded)
         {
             InventoryManager.Instance.AddMaskVisual(maskData);
-            //Debug.Log($"Added a new Mask: {maskData.MaskName}");
+            Debug.Log($"Added a new Mask: {maskData.MaskName}");
+        }
+    }
+
+    public void EquipMask(MaskData maskData)
+    {
+        if (currentMask != null && currentMask.MaskEffects != null)
+        {
+            foreach (MaskEffect effect in currentMask.MaskEffects)
+            {
+                effect.DeactivateEffect(this.gameObject);
+            }
+        }
+
+        currentMask = maskData;
+
+        if (currentMask != null && currentMask.MaskEffects != null)
+        {
+            foreach (MaskEffect effect in currentMask.MaskEffects)
+            {
+                effect.ActivateEffect(this.gameObject);
+            }
         }
     }
 }

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 156af64720c41f7428d84c5d7a09b89a, type: 3}
-  m_Name: Sllort
+  m_Name: Unmask
   m_EditorClassIdentifier: 
-  maskID: 5
-  maskName: Sllort
-  maskPrefab: {fileID: 4091131877945317021, guid: 91ddf3acfaf320749a47977dcd9b2adc, type: 3}
-  maskIcon: {fileID: 21300000, guid: 5800642648880694b9b3e0625d9b619a, type: 3}
+  maskID: 0
+  maskName: Unmask
+  maskPrefab: {fileID: 4669506354895523852, guid: b47c2318f5ab94449b27739f48618b77, type: 3}
+  maskIcon: {fileID: 21300000, guid: 51247b6989a715849aa682c22d49e1bc, type: 3}
   maskCorruptionLevel: 0
   maskEffects: []

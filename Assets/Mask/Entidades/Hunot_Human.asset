@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 156af64720c41f7428d84c5d7a09b89a, type: 3}
-  m_Name: QuimZe
+  m_Name: Hunot_Human
   m_EditorClassIdentifier: 
-  maskID: 4
-  maskName: "Quim Z\xE9"
-  maskPrefab: {fileID: 4059453900094475872, guid: 4920cad4269c3bf4fb01322e3be7efce, type: 3}
-  maskIcon: {fileID: 21300000, guid: e6b63436a80cfb84d93e857a6c78336c, type: 3}
+  maskID: 3
+  maskName: Hunot Humano
+  maskPrefab: {fileID: 6008087396926061014, guid: efe1b360205384648bf1deaa50d40e7e, type: 3}
+  maskIcon: {fileID: 21300000, guid: c54d791c164760b4196ed6d9b87fde82, type: 3}
   maskCorruptionLevel: 0
   maskEffects: []

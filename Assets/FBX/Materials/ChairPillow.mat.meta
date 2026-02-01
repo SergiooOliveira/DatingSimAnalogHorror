@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: ede9643d127890e48a6e43202ca181fa
+<<<<<<<< HEAD:Assets/FBX/Materials/ChairPillow.mat.meta
+guid: 733b691e04829a7469b683224fcf3bcc
+========
+guid: 8270f9a2b0e8a6142bc2b3dd68bb584f
+>>>>>>>> e90087cbc2c561f274a8b0bbfcaaa9c202855eb7:Assets/FBX/Materials/Madeira.002.mat.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000
