@@ -1301,6 +1301,10 @@ PrefabInstance:
       value: -70
       objectReference: {fileID: 0}
     - target: {fileID: 6385585402930795610, guid: 283a344c663518b48a060aa9a8eaec9e, type: 3}
+      propertyPath: xOffset
+      value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385585402930795610, guid: 283a344c663518b48a060aa9a8eaec9e, type: 3}
       propertyPath: maxScale
       value: 2
       objectReference: {fileID: 0}

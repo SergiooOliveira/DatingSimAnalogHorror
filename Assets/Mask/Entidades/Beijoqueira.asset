@@ -18,5 +18,5 @@ MonoBehaviour:
   maskIcon: {fileID: 21300000, guid: 5991fd52a6a0edf4b901caa66193d842, type: 3}
   maskCorruptionLevel: 2
   maskEffects:
-  - {fileID: 11400000, guid: afc9bb881d0af88488c801def6c8bfeb, type: 2}
+  - {fileID: 11400000, guid: a5d83200597ad8443849e9c0f58bcd1d, type: 2}
   - {fileID: 11400000, guid: c9bdf1d2eb2834e45bd8d8f3f899694d, type: 2}

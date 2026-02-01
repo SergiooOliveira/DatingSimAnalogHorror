@@ -10,8 +10,6 @@ public class PlayerData
 
     [Header("Diary Progression")]
     public bool hasDiaryCover = false;
-    public int pagesCollected = 0;
-    public const int totalPages = 8;
 
     public bool AddMask(MaskData newMask)
     {
@@ -21,10 +19,5 @@ public class PlayerData
             return true;
         }
         return false;
-    }
-
-    public void AddPage()
-    {
-        pagesCollected++;
     }
 }

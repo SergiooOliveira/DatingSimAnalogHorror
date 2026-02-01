@@ -16,12 +16,6 @@ public class Player : MonoBehaviour
     private MaskData currentMask;
     public MaskData CurrentMask => currentMask;
 
-    [Header("Corruption System")]
-    [SerializeField] private Slider corruptionSlider;
-    [SerializeField] private float maxCorruption = 100f;
-    [SerializeField] private float recoveryRate = 2.0f; // Recupera sem máscara
-    private float currentCorruption = 0f;
-
     [Header("References")]
     [SerializeField] private Transform mainCanvasTransform;
 
@@ -30,6 +24,7 @@ public class Player : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
+        // Tenta encontrar o canvas se n�o estiver atribu�do
         if (mainCanvasTransform == null)
         {
             Canvas canvas = FindObjectOfType<Canvas>();
@@ -37,93 +32,28 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        if (playerData.playerMasks.Count== 0)
-        {
-            Debug.LogWarning("Player has no masks in PlayerData at start.");
-        }
-
-        if (InventoryManager.Instance != null)
-        {
-            foreach (MaskData mask in playerData.playerMasks)
-            {
-                InventoryManager.Instance.AddMaskVisual(mask);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("InventoryManager instance not found at Player Start.");
-        }
-
-        if (corruptionSlider != null)
-        {
-            corruptionSlider.maxValue = maxCorruption;
-            corruptionSlider.value = 0f;
-        }
-    }
-
-    private void Update()
-    {
-        HandleMaskCorruption();
-    }
-
-    private void HandleMaskCorruption()
-    {
-        // Se o diálogo estiver a decorrer, pausamos a corrupção
-        if (DialogManager.Instance != null && DialogManager.Instance.dialogueIsPlaying) return;
-
-        if (currentMask != null)
-        {
-            // Aumenta a corrupção
-            currentCorruption += currentMask.CorruptionRate * Time.deltaTime;
-
-            if (currentCorruption >= maxCorruption)
-            {
-                currentCorruption = maxCorruption;
-                OnCorruptionFull();
-            }
-        }
-        else
-        {
-            // Recupera sanidade se estiver sem máscara
-            if (currentCorruption > 0)
-            {
-                currentCorruption -= recoveryRate * Time.deltaTime;
-                currentCorruption = Mathf.Max(currentCorruption, 0);
-            }
-        }
-
-        // Atualiza a UI se existir
-        if (corruptionSlider != null)
-        {
-            corruptionSlider.value = currentCorruption;
-        }
-    }
-
-    private void OnCorruptionFull()
-    {
-        Debug.LogWarning("Corrupção máxima atingida! Retirando máscara...");
-        UnequipMask();
-        // Podes adicionar aqui um efeito visual de "flash" ou som de susto
-    }
-
     public void SetDisguise(bool state)
     {
         IsDisguised = state;
     }
 
+    // --- SISTEMA DE DI�LOGO (VERS�O ACTUALIZADA) ---
     public void InteractWithMonster(Monster monster)
     {
         if (monster == null) return;
+
+        // Se o di�logo j� estiver a decorrer, ignorar
         if (DialogManager.Instance.dialogueIsPlaying) return;
 
+        // Desativa o movimento do jogador
         PlayerController pc = GetComponent<PlayerController>();
         if (pc != null) pc.enabled = false;
 
+        // Inicia o di�logo usando a UI fixa da cena atrav�s do Manager
         DialogManager.Instance.EnterDialogueMode(monster);
     }
 
+    // --- SISTEMA DE M�SCARAS ---
     public void ReceiveMask(MaskData maskData)
     {
         if (playerData.AddMask(maskData))
@@ -135,7 +65,7 @@ public class Player : MonoBehaviour
 
     public void EquipMask(MaskData maskData)
     {
-        // Se já tiver uma, remove efeitos
+        // Remove efeitos da m�scara anterior
         if (currentMask != null && currentMask.MaskEffects != null)
         {
             foreach (MaskEffect effect in currentMask.MaskEffects)
@@ -144,47 +74,11 @@ public class Player : MonoBehaviour
 
         currentMask = maskData;
 
-        // Ativa novos efeitos
-        if (currentMask != null)
+        // Ativa efeitos da nova m�scara
+        if (currentMask != null && currentMask.MaskEffects != null)
         {
-            if (currentMask.MaskEffects != null)
-            {
-                foreach (MaskEffect effect in currentMask.MaskEffects)
-                    effect.ActivateEffect(this.gameObject);
-            }
+            foreach (MaskEffect effect in currentMask.MaskEffects)
+                effect.ActivateEffect(this.gameObject);
         }
-        else
-        {
-            SetDisguise(false);
-        }
-    }
-
-    #region Diary
-    // --- DIARY SYSTEM ---
-    public void InteractWithDiaryItem(DiaryItem item)
-    {
-        item.Interact();
-    }
-
-    public void CollectDiaryCover()
-    {
-        playerData.hasDiaryCover = true;
-        // Optional: Trigger UI "New Objective: Find 8 Pages"
-    }
-
-    public void CollectDiaryPage(int pageNumber)
-    {
-        playerData.AddPage();
-
-        if (playerData.pagesCollected >= PlayerData.totalPages)
-        {
-            Debug.Log("DIARY COMPLETED! You found the truth.");
-            // Trigger Ending or XP Reward
-        }
-    }
-    #endregion
-    public void UnequipMask()
-    {
-        EquipMask(null);
     }
 }
