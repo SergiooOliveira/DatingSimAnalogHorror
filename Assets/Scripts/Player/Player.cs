@@ -40,6 +40,10 @@ public class Player : MonoBehaviour
 
     public void InteractWithMonster(Monster monster)
     {
+        // SAFEGUARD: Se já houver um diálogo a decorrer, ignoramos novas chamadas.
+        // Isto impede que o HUD seja criado duas vezes se o StalkerAI chamar a função e o Evento também.
+        if (DialogManager.Instance.dialogueIsPlaying) return;
+
         // 1. Verifica se o monstro tem um HUD específico e se temos onde o pôr
         if (monster.HudPrefab != null && mainCanvasTransform != null)
         {
