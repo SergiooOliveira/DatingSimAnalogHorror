@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 7773652633874664864}
   - component: {fileID: 275146440818278970}
   - component: {fileID: 997228471113207317}
+  - component: {fileID: 7342582078308497493}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -204,7 +205,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7873891222883079095}
-  m_LocalEulerAnglesHint: {x: -89.98, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: -100}
 --- !u!33 &275146440818278970
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -260,6 +261,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!111 &7342582078308497493
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3038833312469485867}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: ecee0d15a6bf8e24ea1d860ce5060347, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: ecee0d15a6bf8e24ea1d860ce5060347, type: 2}
+  - {fileID: 0}
+  - {fileID: 7400000, guid: 4007f31cc53574840b9cf42435551a24, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1 &4892162539113043900
 GameObject:
   m_ObjectHideFlags: 0
